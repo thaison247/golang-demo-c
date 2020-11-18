@@ -1,0 +1,76 @@
+# GitLab CI Runner configuration file
+# By Thanh Nguyen <btnguyen2k@gmail.com>
+
+cache:
+
+variables:
+  GOPATH: /go
+
+before_script:
+  - whoami && pwd && date && go version
+  - "export APP_ROOT=`pwd`"
+  - "echo GOPATH: $GOPATH"
+  - "echo GOROOT: $GOROOT"
+  - "echo APP_ROOT: $APP_ROOT"
+  - "export CI_PROJECT_VERSION=`echo $CI_COMMIT_REF_NAME | cut -d'-' -f 2`"
+  - "echo CI_PROJECT_VERSION: $CI_COMMIT_REF_NAME --\\> $CI_PROJECT_VERSION"
+
+after_script:
+
+stages:
+  - build
+  - test
+  - docker-build
+  - docker-release
+
+build:
+  stage: build
+  only:
+    - /^master$/
+    - /^release-.*$/
+  script:
+    - date
+    - cd $APP_ROOT && go build -o server
+  tags:
+    - gitlabci-build
+    - golang
+    - scom
+
+test:
+  stage: test
+  only:
+    - /^release-.*$/
+  script:
+    - date
+  tags:
+    - gitlabci-build
+    - golang
+    - scom
+
+build docker image:
+  stage: docker-build
+  only:
+    - /^release-.*$/
+  script:
+    - date
+    - cd $APP_ROOT && go build -o server
+    - cd $APP_ROOT && docker build --force-rm -t $DOCKER_REGISTRY_SERVER/$CI_PROJECT_NAME:$CI_PROJECT_VERSION .
+  tags:
+    - gitlabci-build
+    - golang
+    - scom
+
+push release to docker registry:
+  stage: docker-release
+  only:
+    - /^release-.*$/
+  script:
+    - date
+    - echo $DOCKER_REGISTRY_PASSWORD | docker login -u $DOCKER_REGISTRY_USER --password-stdin $DOCKER_REGISTRY_SERVER
+    - docker tag $DOCKER_REGISTRY_SERVER/$CI_PROJECT_NAME:$CI_PROJECT_VERSION $DOCKER_REGISTRY_SERVER/$CI_PROJECT_NAME:latest
+    - docker push $DOCKER_REGISTRY_SERVER/$CI_PROJECT_NAME:$CI_PROJECT_VERSION
+    - docker push $DOCKER_REGISTRY_SERVER/$CI_PROJECT_NAME:latest
+  tags:
+    - gitlabci-build
+    - golang
+    - scom
