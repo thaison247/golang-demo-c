@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{app_name}}
+  labels:
+    app: {{app_name}}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{app_name}}
+  template:
+    metadata:
+      labels:
+        app: {{app_name}}
+    spec:
+      imagePullSecrets:
+        - name: scte-225209-asia
+      containers:
+        - name: {{app_name}}
+          imagePullPolicy: Always
+          image: asia.gcr.io/scte-225209/{{app_name}}:{{image_version}}
+          ports:
+            - containerPort: 8080
+          env:
+            - name: ENV_NAME
+              value: "ENV_VALUE"
+---

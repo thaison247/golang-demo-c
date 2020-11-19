@@ -1,9 +1,9 @@
-# hrtech-demo
-## This is template for Golang using Echo Framework by SonNT - Scommerce, based on go-echo-api.g8.
+# $name$
+## $desc$ by $author$ - $organization$, based on go-echo-api.g8.
 
-Copyright (C) by Scommerce.
+Copyright (C) by $organization$.
 
-Latest release version: 0.1.0
+Latest release version: $version$
 
 ### How to use
 

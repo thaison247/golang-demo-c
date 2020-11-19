@@ -1,0 +1,20 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{app_name}}
+  annotations:
+    kubernetes.io/ingress.class: "kong"
+    configuration.konghq.com: base-kong-ingress
+spec:
+  tls:
+  - hosts: ["domain.scommerce.asia"]
+    secretName: scommerce
+  rules:
+    - host: "domain.scommerce.asia"
+      http:
+        paths:
+          - path: "/"
+            backend:
+              serviceName: {{service_name}}
+              servicePort: {{service_port}}
