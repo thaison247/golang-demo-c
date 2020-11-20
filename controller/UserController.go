@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	tableName string = "users"
+//tableName string = "employees"
 )
 
 func CreateUser(c echo.Context) error {

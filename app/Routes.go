@@ -10,8 +10,11 @@ import (
 
 func defineRoutes(e *echo.Echo) {
 	e.GET("/hello", controller.HelloFunc)
-	e.POST("/api/user", controller.CreateUser)
-	e.GET("/api/user", controller.GetUser)
+	e.GET("/api/employee/all", controller.GetAllEmployee)
+	e.POST("/api/employee", controller.CreateEmployee)
+	e.GET("/api/employee", controller.GetEmployeeById)
+	e.PATCH("api/employee", controller.UpdateEmployee)
+
 }
 
 func Routes(e *echo.Echo) {

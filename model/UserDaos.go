@@ -6,8 +6,8 @@ import (
 
 const SQL_CUSTOM_GET = "" +
 	"SELECT * " +
-	"FROM users " +
-	"WHERE LENGTH(id) > $1 "
+	"FROM employees " +
+	"WHERE employee_id > $1 "
 
 func CustomGet(dbType database.IDatabase, lenId int) (interface{}, error) {
 	params := []interface{}{lenId}
