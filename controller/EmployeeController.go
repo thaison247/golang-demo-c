@@ -89,3 +89,21 @@ func UpdateEmployee(c echo.Context) error {
 
 	return ApiResult(c, http.StatusOK, res)
 }
+
+func DeleteEmployee(c echo.Context) error {
+	var err error
+	var employeeId int
+
+	if employeeId, err = strconv.Atoi(c.QueryParam("employeeid")); err != nil {
+		return ApiResult(c, http.StatusBadRequest, err)
+	}
+
+	dbType := utils.Global[utils.POSTGRES_ENTITY].(database.Postgres)
+	res, err := model.Delete(dbType, tableName, map[string]interface{}{"employee_id": employeeId})
+
+	if err != nil {
+		return ApiResult(c, http.StatusBadRequest, err)
+	}
+
+	return ApiResult(c, http.StatusOK, res)
+}

@@ -11,10 +11,10 @@ import (
 func defineRoutes(e *echo.Echo) {
 	e.GET("/hello", controller.HelloFunc)
 	e.GET("/api/employee/all", controller.GetAllEmployee)
-	e.POST("/api/employee", controller.CreateEmployee)
 	e.GET("/api/employee", controller.GetEmployeeById)
+	e.POST("/api/employee", controller.CreateEmployee)
 	e.PATCH("api/employee", controller.UpdateEmployee)
-
+	e.DELETE("api/employee", controller.DeleteEmployee)
 }
 
 func Routes(e *echo.Echo) {
