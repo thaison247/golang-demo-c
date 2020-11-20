@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	tableName string = "employees"
+// tableName string = "employees"
 )
 
 func CreateEmployee(c echo.Context) error {
@@ -33,7 +33,7 @@ func CreateEmployee(c echo.Context) error {
 	return ApiResult(c, http.StatusOK, "Success")
 }
 
-func GetAllEmployee(c echo.Context) error {
+func GetAllEmployees(c echo.Context) error {
 	dbType := utils.Global[utils.POSTGRES_ENTITY].(database.Postgres)
 	rs, err := model.Get(dbType, tableName, 10, 0)
 
