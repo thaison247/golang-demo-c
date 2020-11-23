@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	tableName string = "departments"
+	DEPARTMENTS string = "departments"
 )
 
 func CreateDepartment(c echo.Context) error {
@@ -25,7 +25,7 @@ func CreateDepartment(c echo.Context) error {
 	}
 
 	dbType := utils.Global[utils.POSTGRES_ENTITY].(database.Postgres)
-	_, err = model.Create(dbType, tableName, dataReq)
+	_, err = model.Create(dbType, DEPARTMENTS, dataReq)
 	if err != nil {
 		return ApiResult(c, http.StatusBadRequest, err)
 	}
@@ -47,7 +47,7 @@ func GetDepartments(c echo.Context) error {
 	}
 
 	dbType := utils.Global[utils.POSTGRES_ENTITY].(database.Postgres)
-	rs, err := model.Get(dbType, tableName, limit, offset)
+	rs, err := model.Get(dbType, DEPARTMENTS, limit, offset)
 
 	if err != nil {
 		return ApiResult(c, http.StatusBadRequest, err)
@@ -93,7 +93,7 @@ func UpdateDepartment(c echo.Context) error {
 
 	dbType := utils.Global[utils.POSTGRES_ENTITY].(database.Postgres)
 
-	res, err := model.Update(dbType, tableName, newData, map[string]interface{}{"department_id": departmentId})
+	res, err := model.Update(dbType, DEPARTMENTS, newData, map[string]interface{}{"department_id": departmentId})
 
 	if err != nil {
 		return ApiResult(c, http.StatusBadRequest, err)
@@ -111,7 +111,7 @@ func DeleteDepartment(c echo.Context) error {
 	}
 
 	dbType := utils.Global[utils.POSTGRES_ENTITY].(database.Postgres)
-	res, err := model.Delete(dbType, tableName, map[string]interface{}{"department_id": departmentId})
+	res, err := model.Delete(dbType, DEPARTMENTS, map[string]interface{}{"department_id": departmentId})
 
 	if err != nil {
 		return ApiResult(c, http.StatusBadRequest, err)

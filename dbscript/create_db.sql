@@ -55,10 +55,10 @@ CREATE TABLE IF NOT EXISTS emp_dep (
 )
 
 ALTER TABLE emp_dep
-ADD CONSTRAINT empdep_employee_fk FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
+ADD CONSTRAINT empdep_employee_fk FOREIGN KEY (employee_id) REFERENCES employees(employee_id) ON DELETE CASCADE
 
 ALTER TABLE emp_dep
-ADD CONSTRAINT empdep_department_fk FOREIGN KEY (department_id) REFERENCES departments(department_id)
+ADD CONSTRAINT empdep_department_fk FOREIGN KEY (department_id) REFERENCES departments(department_id) ON DELETE CASCADE
 
 INSERT INTO emp_dep (employee_id, department_id, effect_from, created_at)
 VALUES (1, 3, now(), now()),

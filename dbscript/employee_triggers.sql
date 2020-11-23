@@ -1,3 +1,5 @@
+
+-- CREATE A TRIGGER TO SET updated_at FIELD EVERYTIME AN EMPLOYEE IS UPDATED
 -- create trigger function
 CREATE FUNCTION Log_update_trigger_function()
 	RETURNS TRIGGER

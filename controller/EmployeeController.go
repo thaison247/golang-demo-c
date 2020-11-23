@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"fmt"
 	"main/model"
 	"main/structs"
 	"main/utils"
@@ -13,7 +14,7 @@ import (
 )
 
 var (
-// tableName string = "employees"
+	EMPLOYEES string = "employees"
 )
 
 func CreateEmployee(c echo.Context) error {
@@ -25,7 +26,10 @@ func CreateEmployee(c echo.Context) error {
 	}
 
 	dbType := utils.Global[utils.POSTGRES_ENTITY].(database.Postgres)
-	_, err = model.Create(dbType, tableName, dataReq)
+	res, err := model.Create(dbType, EMPLOYEES, dataReq)
+
+	fmt.Println(res)
+
 	if err != nil {
 		return ApiResult(c, http.StatusBadRequest, err)
 	}
@@ -33,9 +37,46 @@ func CreateEmployee(c echo.Context) error {
 	return ApiResult(c, http.StatusOK, "Success")
 }
 
-func GetAllEmployees(c echo.Context) error {
+func CreateEmployeeV2(c echo.Context) error {
+	var err error
+
+	dataReq := new(structs.Employee)
+	if err = c.Bind(dataReq); err != nil {
+		return ApiResult(c, http.StatusBadRequest, err)
+	}
+
+	jsonData, err := json.Marshal(dataReq)
+	var newData map[string]interface{}
+	err = json.Unmarshal([]byte(jsonData), &newData)
+
+	delete(newData, "department_id")
+	delete(newData, "employee_id")
+
 	dbType := utils.Global[utils.POSTGRES_ENTITY].(database.Postgres)
-	rs, err := model.Get(dbType, tableName, 10, 0)
+	res, err := model.CreateWithMap(dbType, newData)
+
+	if err != nil {
+		return ApiResult(c, http.StatusBadRequest, err)
+	}
+
+	return ApiResult(c, http.StatusOK, res)
+}
+
+func GetAllEmployees(c echo.Context) error {
+	var limit int
+	var offset int
+	var err error
+
+	if limit, err = strconv.Atoi(c.QueryParam("limit")); err != nil {
+		return ApiResult(c, http.StatusBadRequest, err)
+	}
+
+	if offset, err = strconv.Atoi(c.QueryParam("offset")); err != nil {
+		return ApiResult(c, http.StatusBadRequest, err)
+	}
+
+	dbType := utils.Global[utils.POSTGRES_ENTITY].(database.Postgres)
+	rs, err := model.GetEmployeesWithDepartmentId(dbType, limit, offset)
 
 	if err != nil {
 		return ApiResult(c, http.StatusBadRequest, err)
@@ -81,7 +122,7 @@ func UpdateEmployee(c echo.Context) error {
 
 	dbType := utils.Global[utils.POSTGRES_ENTITY].(database.Postgres)
 
-	res, err := model.Update(dbType, tableName, newData, map[string]interface{}{"employee_id": employeeId})
+	res, err := model.Update(dbType, EMPLOYEES, newData, map[string]interface{}{"employee_id": employeeId})
 
 	if err != nil {
 		return ApiResult(c, http.StatusBadRequest, err)
@@ -99,11 +140,11 @@ func DeleteEmployee(c echo.Context) error {
 	}
 
 	dbType := utils.Global[utils.POSTGRES_ENTITY].(database.Postgres)
-	res, err := model.Delete(dbType, tableName, map[string]interface{}{"employee_id": employeeId})
+	_, err = model.Delete(dbType, EMPLOYEES, map[string]interface{}{"employee_id": employeeId})
 
 	if err != nil {
 		return ApiResult(c, http.StatusBadRequest, err)
 	}
 
-	return ApiResult(c, http.StatusOK, res)
+	return ApiResult(c, http.StatusOK, "success")
 }
