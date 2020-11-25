@@ -10,7 +10,7 @@ create or replace function get_employees_with_department (
 		email text,
 		gender boolean,
 		job_title text,
-		created_at date,
+		created_at timestamp with time zone,
 		updated_at date,
 		address text,
 		department_id int,
@@ -96,6 +96,43 @@ BEGIN
                                         AND emp_dep.effect_from <= now());
 END;
 $$
+
+-- get one employee by id (including department infomation)
+create or replace function get_one_employee_with_department (
+  	p_employee_id int
+) 
+	returns table (
+		employee_id int,
+		full_name text,
+		phone_number text,
+		email text,
+		gender boolean,
+		job_title text,
+		created_at timestamp with time zone,
+		updated_at date,
+		address text,
+		department_id int,
+		department_code varchar(5),
+		department_name text,
+		effect_from date
+	) 
+	language plpgsql
+as $$
+begin
+	return query 
+		select
+			e.*, d.department_id, d.department_code, d.department_name, ed.effect_from
+		from
+			employees e join
+			(emp_dep ed join departments d on ed.department_id = d.department_id)
+			on e.employee_id = ed.employee_id
+		where
+			e.employee_id = p_employee_id and
+			ed.effect_from = (select max(emp_dep.effect_from) 
+							  from emp_dep 
+							  where emp_dep.employee_id = p_employee_id
+							  		and emp_dep.effect_from <= now());
+end;$$
 
 -- get employee's department id
 create function get_employee_departmentid (

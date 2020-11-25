@@ -1,6 +1,8 @@
 package app
 
 import (
+	"html/template"
+	"io"
 	"net"
 	"net/http"
 	"strconv"
@@ -21,6 +23,34 @@ var (
 	echoInstance *echo.Echo
 	AppConfig    *utils.HoconConfig
 )
+
+type Renderer struct {
+	template *template.Template
+	debug    bool
+	location string
+}
+
+func NewRenderer(location string, debug bool) *Renderer {
+	tp1 := new(Renderer)
+	tp1.location = location
+	tp1.debug = debug
+
+	tp1.ReloadTemplates()
+
+	return tp1
+}
+
+func (r *Renderer) ReloadTemplates() {
+	r.template = template.Must(template.ParseGlob(r.location))
+}
+
+func (r *Renderer) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
+	if r.debug {
+		r.ReloadTemplates()
+	}
+
+	return r.template.ExecuteTemplate(w, name, data)
+}
 
 func getEchoInstance() *echo.Echo {
 	if echoInstance == nil {
@@ -65,9 +95,13 @@ func initDatabase() {
 
 func startRestServer() {
 	e := getEchoInstance()
+
 	listenAddr := AppConfig.Conf.GetString("rest.listen_addr", "127.0.0.1")
 	listenPort := AppConfig.Conf.GetInt32("rest.listen_port", 8080)
 	request_timeout := AppConfig.Conf.GetInt32("api.request_timeout", 10)
+
+	e.Renderer = NewRenderer("public/views/*.html", true)
+	e.Static("/", "public")
 
 	s := &http.Server{
 		Addr:         listenAddr + ":" + strconv.Itoa(int(listenPort)),

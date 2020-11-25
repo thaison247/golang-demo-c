@@ -49,7 +49,6 @@ func CreateEmployeeV2(c echo.Context) error {
 	var newData map[string]interface{}
 	err = json.Unmarshal([]byte(jsonData), &newData)
 
-	delete(newData, "department_id")
 	delete(newData, "employee_id")
 
 	dbType := utils.Global[utils.POSTGRES_ENTITY].(database.Postgres)
@@ -76,7 +75,7 @@ func GetAllEmployees(c echo.Context) error {
 	}
 
 	dbType := utils.Global[utils.POSTGRES_ENTITY].(database.Postgres)
-	rs, err := model.GetEmployeesWithDepartmentId(dbType, limit, offset)
+	rs, err := model.GetEmployeesWithDepartment(dbType, limit, offset)
 
 	if err != nil {
 		return ApiResult(c, http.StatusBadRequest, err)

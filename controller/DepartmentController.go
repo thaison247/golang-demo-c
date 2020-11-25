@@ -24,6 +24,12 @@ func CreateDepartment(c echo.Context) error {
 		return ApiResult(c, http.StatusBadRequest, err)
 	}
 
+	jsonData, err := json.Marshal(dataReq)
+	var newData map[string]interface{}
+	err = json.Unmarshal([]byte(jsonData), &newData)
+
+	delete(newData, "department_id")
+
 	dbType := utils.Global[utils.POSTGRES_ENTITY].(database.Postgres)
 	_, err = model.Create(dbType, DEPARTMENTS, dataReq)
 	if err != nil {
