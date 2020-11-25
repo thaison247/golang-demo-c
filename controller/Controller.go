@@ -21,5 +21,9 @@ func HelloFunc(c echo.Context) error {
 }
 
 func AllEmployees(c echo.Context) error {
-	return c.Render(http.StatusOK, "index.html", nil)
+	return c.Render(http.StatusOK, "employee.html", nil)
+}
+
+func AllDepartments(c echo.Context) error {
+	return c.Render(http.StatusOK, "department.html", nil)
 }

@@ -12,6 +12,7 @@ func defineRoutes(e *echo.Echo) {
 
 	e.GET("/hello", controller.HelloFunc)
 	e.GET("/employee", controller.AllEmployees)
+	e.GET("/department", controller.AllDepartments)
 
 	e.GET("/api/employee/all", controller.GetAllEmployees)
 	e.GET("/api/employee", controller.GetEmployeeById)
