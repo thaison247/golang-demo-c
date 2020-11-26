@@ -1,6 +1,7 @@
 package app
 
 import (
+	"errors"
 	"html/template"
 	"io"
 	"net"
@@ -24,32 +25,33 @@ var (
 	AppConfig    *utils.HoconConfig
 )
 
-type Renderer struct {
-	template *template.Template
-	debug    bool
-	location string
+type TemplateRegistry struct {
+	templates map[string]*template.Template
+	// debug    bool
+	// location string
 }
 
-func NewRenderer(location string, debug bool) *Renderer {
-	tp1 := new(Renderer)
-	tp1.location = location
-	tp1.debug = debug
+// func NewRenderer(location string, debug bool) *Renderer {
+// 	tp1 := new(Renderer)
+// 	// tp1.location = location
+// 	// tp1.debug = debug
 
-	tp1.ReloadTemplates()
+// 	// tp1.ReloadTemplates()
 
-	return tp1
-}
+// 	return tp1
+// }
 
-func (r *Renderer) ReloadTemplates() {
-	r.template = template.Must(template.ParseGlob(r.location))
-}
+// func (r *Renderer) ReloadTemplates() {
+// 	r.template = template.Must(template.ParseGlob(r.location))
+// }
 
-func (r *Renderer) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
-	if r.debug {
-		r.ReloadTemplates()
+func (r *TemplateRegistry) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
+	tmpl, ok := r.templates[name]
+	if !ok {
+		err := errors.New("Template not found -> " + name)
+		return err
 	}
-
-	return r.template.ExecuteTemplate(w, name, data)
+	return tmpl.ExecuteTemplate(w, "base.html", data)
 }
 
 func getEchoInstance() *echo.Echo {
@@ -100,8 +102,14 @@ func startRestServer() {
 	listenPort := AppConfig.Conf.GetInt32("rest.listen_port", 8080)
 	request_timeout := AppConfig.Conf.GetInt32("api.request_timeout", 10)
 
-	e.Renderer = NewRenderer("public/views/*.html", true)
 	e.Static("/", "public")
+
+	templates := make(map[string]*template.Template)
+	templates["employee.html"] = template.Must(template.ParseFiles("public/views/employee.html", "public/views/base.html"))
+	templates["department.html"] = template.Must(template.ParseFiles("public/views/department.html", "public/views/base.html"))
+	e.Renderer = &TemplateRegistry{
+		templates: templates,
+	}
 
 	s := &http.Server{
 		Addr:         listenAddr + ":" + strconv.Itoa(int(listenPort)),

@@ -21,9 +21,13 @@ func HelloFunc(c echo.Context) error {
 }
 
 func AllEmployees(c echo.Context) error {
-	return c.Render(http.StatusOK, "employee.html", nil)
+	return c.Render(http.StatusOK, "employee.html", map[string]interface{}{
+		"page-title": "Employee",
+	})
 }
 
 func AllDepartments(c echo.Context) error {
-	return c.Render(http.StatusOK, "department.html", nil)
+	return c.Render(http.StatusOK, "department.html", map[string]interface{}{
+		"page-title": "Department",
+	})
 }
