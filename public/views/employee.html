@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="dist/css/style.css">
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 </head>
@@ -256,7 +257,7 @@
                             </div>
                             <!-- /.card -->
                             <!-- Modal -->
-                            <div class="modal fade" id="detailModal" tabindex="-1" role="dialog"
+                            <div id="emp-modal" class="modal fade" id="detailModal" tabindex="-1" role="dialog"
                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
@@ -267,10 +268,45 @@
                                             </button>
                                         </div>
                                         <div class="modal-body">
-                                            ...
+                                            <form>
+                                                <div class="form-group">
+                                                    <input type="hidden" class="form-control" id="employee_id">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="full_name">Full name</label>
+                                                    <input type="text" class="form-control" id="full_name">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="gender">Gender</label>
+                                                    <input type="text" class="form-control" id="gender">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="email">Email address</label>
+                                                    <input type="email" class="form-control" id="email">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="phone_number">Phone number</label>
+                                                    <input type="text" class="form-control" id="phone_number">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="address">Address</label>
+                                                    <input type="text" class="form-control" id="address">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="job_title">Job title</label>
+                                                    <input type="text" class="form-control" id="job_title">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="department_name">Department</label>
+                                                    <input type="text" class="form-control" id="department_name">
+                                                    <label for="effect_from">Effect from</label>
+                                                    <input type="text" class="form-control" id="effect_from">
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Submit</button>
+                                            </form>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
+                                            <button id="close-btn" type="button" class="btn btn-secondary"
                                                 data-dismiss="modal">Close</button>
                                             <button type="button" class="btn btn-primary">Save changes</button>
                                         </div>
@@ -306,6 +342,8 @@
 
     <!-- jQuery -->
     <script src="plugins/jquery/jquery.min.js"></script>
+    <!-- Moment JS -->
+    <script src="plugins/moment/moment.min.js"></script>
     <!-- Bootstrap 4 -->
     <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <!-- DataTables -->
