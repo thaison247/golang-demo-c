@@ -129,22 +129,18 @@ $(".close").click(() => {
 $("#save-btn").click(() => {
   var empData = getFormData($("#emp-form").serializeArray());
   empData.gender = empData.gender == "Male" ? true : false;
+  empData.employee_id = Number(empData.employee_id);
 
-  var empdepData = getFormData($("#emp_dep-form").serializeArray());
-  empdepData.effect_from =
-    moment(empdepData.effect_from, "DD-MM-YYYY").format("YYYY-MM-DD") +
-    "T00:00:00Z";
-
-  console.log(data);
-
-  updateEmpReq(data);
+  console.log("employee data: ", empData);
+  updateEmpReq(empData);
 });
 
 function updateEmpReq(empData) {
   var updateEmpReq = $.ajax({
     url: `http://localhost:8080/api/employee?employeeid=${empData.employee_id}`,
-    method: "PATCH",
+    method: "PUT",
     data: JSON.stringify(empData),
+    contentType: "application/json",
   });
 
   updateEmpReq.done((res) => {

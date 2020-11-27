@@ -110,8 +110,9 @@ func UpdateEmployee(c echo.Context) error {
 		return ApiResult(c, http.StatusBadRequest, err)
 	}
 
-	dataReq := new(structs.Employee)
-	if err = c.Bind(dataReq); err != nil {
+	dataReq := structs.Employee{}
+	if err = c.Bind(&dataReq); err != nil {
+		fmt.Println(err)
 		return ApiResult(c, http.StatusBadRequest, err)
 	}
 
