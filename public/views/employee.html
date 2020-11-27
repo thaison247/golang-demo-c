@@ -17,6 +17,8 @@ Management | {{index . "page-title"}}
                     <div class="card-header">
                         <h3 class="card-title">DataTable with minimal features & hover style</h3>
                     </div>
+                    <button id="add-emp-btn" type="button" class="btn btn-outline-success add-emp-btn">ADD
+                        EMPLOYEE</button>
                     <!-- /.card-header -->
                     <div class="card-body">
                         <table id="employees_table" class="table table-bordered table-hover">
@@ -99,6 +101,76 @@ Management | {{index . "page-title"}}
                                 <button id="close-btn" type="button" class="btn btn-secondary"
                                     data-dismiss="modal">Close</button>
                                 <button id="save-btn" type="button" class="btn btn-primary">Save changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- detail modal -->
+                <!-- Add Employee Modal -->
+                <div id="add-emp-modal" class="modal fade" id="detailModal" tabindex="-1" role="dialog"
+                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Add Employee</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="add-emp-form">
+                                    <div class="form-group">
+                                        <input name="employee_id" type="hidden" class="form-control" id="employee_id">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="full_name">Full name</label>
+                                        <input name="full_name" type="text" class="form-control" id="full_name">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="gender">Gender</label>
+                                        <input name="gender" type="text" class="form-control" id="gender">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="email">Email address</label>
+                                        <input name="email" type="email" class="form-control" id="email">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="phone_number">Phone number</label>
+                                        <input name="phone_number" type="text" class="form-control" id="phone_number">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="address">Address</label>
+                                        <input name="address" type="text" class="form-control" id="address">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="job_title">Job title</label>
+                                        <input name="job_title" type="text" class="form-control" id="input_job_title">
+                                    </div>
+                                </form>
+                                <form id="add-emp_dep-form">
+                                    <!-- <div class="form-group">
+                                        <input name="employee_id" type="hidden" class="form-control" id="employee_id">
+                                    </div> -->
+                                    <div class="department-info">
+                                        <div class="form-group">
+                                            <label for="department_name">Department</label>
+                                            <!-- <input type="text" class="form-control" id="department_name"> -->
+                                            <select name="department_id" class="custom-select"
+                                                id="input_department_name">
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="effect_from">Effect from</label>
+                                            <input name="effect_from" type="text" class="form-control"
+                                                id="input_effect_from">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button id="add-emp-close-btn" type="button" class="btn btn-secondary"
+                                    data-dismiss="modal">Close</button>
+                                <button id="submit-btn" type="button" class="btn btn-primary">Submit</button>
                             </div>
                         </div>
                     </div>

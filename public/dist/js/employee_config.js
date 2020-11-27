@@ -195,3 +195,28 @@ function changeDepartment(empdepData) {
     console.log("Request failed: " + textStatus);
   });
 }
+
+//ADD EMPLOYEE
+$("#add-emp-btn").click(() => {
+  $("#add-emp-modal").addClass("show");
+  $("#add-emp-modal").css({
+    display: "block",
+    background: "rgba(0, 0, 0, 0.4)",
+  });
+
+  var getListDepartmentsReq = $.ajax({
+    url: "http://localhost:8080/api/department/all?limit=10&offset=0",
+    method: "GET",
+  });
+
+  getListDepartmentsReq.done((res) => {
+    $("#add-emp_dep-form #input_department_name").empty();
+    var listDepartments = res.data;
+    $.each(listDepartments, function (i, dep) {
+      var option = `<option value="${dep.department_id}">${dep.department_name}</option>`;
+      $("#add-emp_dep-form #input_department_name").append(option);
+    });
+  });
+});
+
+$("#submit-btn").click(() => {});

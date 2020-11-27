@@ -4,3 +4,7 @@
 .department-info div:nth-child(2){
     margin-left: 15px
 }
+.add-emp-btn{
+    width: 20%;
+    margin: 10px 0 0 20px;
+}
