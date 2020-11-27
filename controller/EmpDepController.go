@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"fmt"
 	"main/model"
 	"main/structs"
 	"main/utils"
@@ -21,6 +22,7 @@ func AddEmployeeToDepartment(c echo.Context) error {
 	// get data from request, bind to EmpDep struct
 	dataReq := new(structs.EmpDep)
 	if err = c.Bind(dataReq); err != nil {
+		fmt.Println(err)
 		return ApiResult(c, http.StatusBadRequest, err)
 	}
 

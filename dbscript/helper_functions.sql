@@ -28,9 +28,13 @@ begin
 			(emp_dep ed join departments d on ed.department_id = d.department_id)
 			on e.employee_id = ed.employee_id
 		where
-			ed.effect_from = (select max(effect_from) from emp_dep where emp_dep.employee_id = e.employee_id and emp_dep.effect_from <= now())
+			ed.id = (select emp_dep.id from emp_dep where emp_dep.employee_id = e.employee_id and emp_dep.effect_from <= now() 
+					 and emp_dep.created_at = (select max(ed1.created_at)
+											    from emp_dep ed1
+											    where ed1.employee_id = e.employee_id))
 		limit p_limit offset p_offset;
 end;$$
+
 
 
 -- select employees (return employees wth department ids)
@@ -128,10 +132,10 @@ begin
 			on e.employee_id = ed.employee_id
 		where
 			e.employee_id = p_employee_id and
-			ed.effect_from = (select max(emp_dep.effect_from) 
-							  from emp_dep 
-							  where emp_dep.employee_id = p_employee_id
-							  		and emp_dep.effect_from <= now());
+			ed.id = (select emp_dep.id from emp_dep where emp_dep.employee_id = p_employee_id and emp_dep.effect_from <= now() 
+					 and emp_dep.created_at = (select max(ed1.created_at)
+											    from emp_dep ed1
+											    where ed1.employee_id = p_employee_id));
 end;$$
 
 -- get employee's department id

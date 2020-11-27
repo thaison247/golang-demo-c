@@ -8,12 +8,12 @@ $(document).ready(() => {
     var listEmployees = msg.data;
     $.each(listEmployees, function (i, val) {
       const trElement = `<tr id="employee-${val.employee_id}">
-                            <td>${val.employee_id}</td>
-                            <td>
+                            <td id="employeeId">${val.employee_id}</td>
+                            <td id="fullName">
                                 ${val.full_name}
                             </td>
-                            <td>${val.phone_number}</td>
-                            <td>${val.department_name}</td>
+                            <td id="phoneNumber">${val.phone_number}</td>
+                            <td id="departmentName">${val.department_name}</td>
                             <td>
                               <button id="emp-btn-${val.employee_id}" type="button" class="btn btn-primary detail-btn" data-id="${val.employee_id}">
                                 Detail
@@ -131,7 +131,6 @@ $("#save-btn").click(() => {
   empData.gender = empData.gender == "Male" ? true : false;
   empData.employee_id = Number(empData.employee_id);
 
-  console.log("employee data: ", empData);
   updateEmpReq(empData);
 });
 
@@ -145,11 +144,53 @@ function updateEmpReq(empData) {
 
   updateEmpReq.done((res) => {
     if (res.status == 200) {
-      console.log("success");
+      console.log(empData);
+      $(`#employee-${empData.employee_id} #fullName`).text(
+        `${empData.full_name}`
+      );
+      // $(`#employee-${empData.employee_id} #departmentName`).inner(`${empData.departmentName}`)
+      $(`#employee-${empData.employee_id} #phoneNumber`).text(
+        `${empData.phone_number}`
+      );
+
+      var empdepData = getFormData($("#emp_dep-form").serializeArray());
+      empdepData.effect_from =
+        moment(empdepData.effect_from, "DD-MM-YYYY").format("YYYY-MM-DD") +
+        "T00:00:00Z";
+      empdepData.employee_id = Number(empdepData.employee_id);
+      empdepData.department_id = Number(empdepData.department_id);
+      empdepData.department_name = $(
+        "#emp_dep-form #department_name option:selected"
+      ).text();
+
+      changeDepartment(empdepData);
     }
   });
 
   updateEmpReq.fail(function (jqXHR, textStatus) {
+    alert("Request failed: " + textStatus);
+    console.log("Request failed: " + textStatus);
+  });
+}
+
+function changeDepartment(empdepData) {
+  var changeDepReq = $.ajax({
+    url: `http://localhost:8080/api/empdep`,
+    method: "POST",
+    data: JSON.stringify(empdepData),
+    contentType: "application/json",
+  });
+
+  changeDepReq.done((res) => {
+    if (res.status == 200) {
+      console.log(empdepData);
+      $(`#employee-${empdepData.employee_id} #departmentName`).text(
+        `${empdepData.department_name}`
+      );
+    }
+  });
+
+  changeDepReq.fail(function (jqXHR, textStatus) {
     alert("Request failed: " + textStatus);
     console.log("Request failed: " + textStatus);
   });
