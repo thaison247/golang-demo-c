@@ -1,0 +1,6 @@
+.department-info{
+    display: flex;
+}
+.department-info div:nth-child(2){
+    margin-left: 15px
+}

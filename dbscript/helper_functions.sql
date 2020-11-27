@@ -28,7 +28,7 @@ begin
 			(emp_dep ed join departments d on ed.department_id = d.department_id)
 			on e.employee_id = ed.employee_id
 		where
-			ed.effect_from = (select max(effect_from) from emp_dep where emp_dep.employee_id = e.employee_id)
+			ed.effect_from = (select max(effect_from) from emp_dep where emp_dep.employee_id = e.employee_id and emp_dep.effect_from <= now())
 		limit p_limit offset p_offset;
 end;$$
 
@@ -59,7 +59,7 @@ begin
 		from
 			employees e join emp_dep ed on e.employee_id = ed.employee_id
 		where
-			ed.effect_from = (select max(effect_from) from emp_dep where emp_dep.employee_id = e.employee_id)
+			ed.effect_from = (select max(effect_from) from emp_dep where emp_dep.employee_id = e.employee_id and emp_dep.effect_from <= now())
 		limit p_limit offset p_offset;
 end;$$
 

@@ -115,9 +115,12 @@ func UpdateEmployee(c echo.Context) error {
 		return ApiResult(c, http.StatusBadRequest, err)
 	}
 
+	fmt.Println(dataReq)
+
 	jsonData, err := json.Marshal(dataReq)
 	var newData map[string]interface{}
 	err = json.Unmarshal([]byte(jsonData), &newData)
+	fmt.Println("new data: ", newData)
 
 	dbType := utils.Global[utils.POSTGRES_ENTITY].(database.Postgres)
 

@@ -3,6 +3,9 @@ Management | {{index . "page-title"}}
 {{end}}
 
 {{define "header"}}
+<link rel="stylesheet" href="dist/css/employee_style.css">
+<link rel="stylesheet" href="plugins/jquery/jquery.datetimepicker.min.css">
+
 {{end}}
 
 {{define "content"}}
@@ -45,47 +48,57 @@ Management | {{index . "page-title"}}
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <form>
+                                <form id="emp-form">
                                     <div class="form-group">
-                                        <input type="hidden" class="form-control" id="employee_id">
+                                        <input name="employee_id" type="hidden" class="form-control" id="employee_id">
                                     </div>
                                     <div class="form-group">
                                         <label for="full_name">Full name</label>
-                                        <input type="text" class="form-control" id="full_name">
+                                        <input name="full_name" type="text" class="form-control" id="full_name">
                                     </div>
                                     <div class="form-group">
                                         <label for="gender">Gender</label>
-                                        <input type="text" class="form-control" id="gender">
+                                        <input name="gender" type="text" class="form-control" id="gender">
                                     </div>
                                     <div class="form-group">
                                         <label for="email">Email address</label>
-                                        <input type="email" class="form-control" id="email">
+                                        <input name="email" type="email" class="form-control" id="email">
                                     </div>
                                     <div class="form-group">
                                         <label for="phone_number">Phone number</label>
-                                        <input type="text" class="form-control" id="phone_number">
+                                        <input name="phone_number" type="text" class="form-control" id="phone_number">
                                     </div>
                                     <div class="form-group">
                                         <label for="address">Address</label>
-                                        <input type="text" class="form-control" id="address">
+                                        <input name="address" type="text" class="form-control" id="address">
                                     </div>
                                     <div class="form-group">
                                         <label for="job_title">Job title</label>
-                                        <input type="text" class="form-control" id="job_title">
+                                        <input name="job_title" type="text" class="form-control" id="job_title">
                                     </div>
+                                </form>
+                                <form id="emp_dep-form">
                                     <div class="form-group">
-                                        <label for="department_name">Department</label>
-                                        <input type="text" class="form-control" id="department_name">
-                                        <label for="effect_from">Effect from</label>
-                                        <input type="text" class="form-control" id="effect_from">
+                                        <input name="employee_id" type="hidden" class="form-control" id="employee_id">
                                     </div>
-                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                    <div class="department-info">
+                                        <div class="form-group">
+                                            <label for="department_name">Department</label>
+                                            <!-- <input type="text" class="form-control" id="department_name"> -->
+                                            <select name="department_id" class="custom-select" id="department_name">
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="effect_from">Effect from</label>
+                                            <input name="effect_from" type="text" class="form-control" id="effect_from">
+                                        </div>
+                                    </div>
                                 </form>
                             </div>
                             <div class="modal-footer">
                                 <button id="close-btn" type="button" class="btn btn-secondary"
                                     data-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary">Save changes</button>
+                                <button id="save-btn" type="button" class="btn btn-primary">Save changes</button>
                             </div>
                         </div>
                     </div>
@@ -101,6 +114,10 @@ Management | {{index . "page-title"}}
 {{end}}
 
 {{define "config"}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.5.4/umd/popper.min.js"
+    integrity="sha512-7yA/d79yIhHPvcrSiB8S/7TyX0OxlccU8F/kuB8mHYjLlF1MInPbEohpoqfz0AILoq5hoD7lELZAYYHbyeEjag=="
+    crossorigin="anonymous"></script>
+<script src="plugins\jquery\jquery.datetimepicker.full.min.js"></script>
 <!-- Working with APIs -->
 <script src="dist/js/employee_config.js"></script>
 {{end}}

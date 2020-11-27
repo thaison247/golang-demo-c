@@ -54,23 +54,51 @@ var getEmployeeById = (employeeId) => {
     method: "GET",
   });
 
-  request.done(function (msg) {
+  request.done((msg) => {
+    var getListDepartmentsReq = $.ajax({
+      url: "http://localhost:8080/api/department/all?limit=10&offset=0",
+      method: "GET",
+    });
+
     const employee = msg.data[0];
     $("#emp-modal").addClass("show");
     $("#emp-modal").css({ display: "block", background: "rgba(0, 0, 0, 0.4)" });
 
-    $("#emp-modal #employee_id").val(employee.employee_id);
-    $("#emp-modal #full_name").val(employee.full_name);
+    $("#emp-form #employee_id").val(employee.employee_id);
+    $("#emp_dep-form #employee_id").val(employee.employee_id);
+    $("#emp-form #full_name").val(employee.full_name);
     const gender = employee.gender ? "Male" : "Female";
-    $("#emp-modal #gender").val(gender);
-    $("#emp-modal #email").val(employee.email);
-    $("#emp-modal #phone_number").val(employee.phone_number);
-    $("#emp-modal #address").val(employee.address);
-    $("#emp-modal #job_title").val(employee.job_title);
-    $("#emp-modal #department_name").val(employee.department_name);
-    $("#emp-modal #effect_from").val(
-      moment(new Date(employee.effect_from), "LLL")
-    );
+    $("#emp-form #gender").val(gender);
+    $("#emp-form #email").val(employee.email);
+    $("#emp-form #phone_number").val(employee.phone_number);
+    $("#emp-form #address").val(employee.address);
+    $("#emp-form #job_title").val(employee.job_title);
+    // $("#emp_dep-form #department_name").val(employee.department_name);
+    var momentDate = moment(employee.effect_from).format("DD-MM-YYYY");
+    $("#emp_dep-form #effect_from").datetimepicker({
+      timepicker: false,
+      datepicker: true,
+      format: "d-m-yy",
+      value: momentDate,
+    });
+
+    getListDepartmentsReq.done((res) => {
+      const listDepartments = res.data;
+
+      $("#emp_dep-form #department_name").empty();
+
+      $.each(listDepartments, function (i, dep) {
+        var option =
+          dep.department_id == employee.department_id
+            ? `<option selected value="${dep.department_id}">${dep.department_name}</option>`
+            : `<option value="${dep.department_id}">${dep.department_name}</option>`;
+        $("#emp_dep-form #department_name").append(option);
+      });
+    });
+
+    getListDepartmentsReq.fail(function (jqXHR, textStatus) {
+      alert("Request failed: " + textStatus);
+    });
   });
 
   request.fail(function (jqXHR, textStatus) {
@@ -78,11 +106,55 @@ var getEmployeeById = (employeeId) => {
   });
 };
 
+var getFormData = (unindexed_array) => {
+  var indexed_array = {};
+
+  $.map(unindexed_array, function (n, i) {
+    indexed_array[n["name"]] = n["value"];
+  });
+
+  return indexed_array;
+};
+
 $("#close-btn").click(() => {
   $("#emp-modal").removeClass("show");
   $("#emp-modal").css({ display: "none", background: "none" });
 });
+
 $(".close").click(() => {
   $("#emp-modal").removeClass("show");
   $("#emp-modal").css({ display: "none", background: "none" });
 });
+
+$("#save-btn").click(() => {
+  var empData = getFormData($("#emp-form").serializeArray());
+  empData.gender = empData.gender == "Male" ? true : false;
+
+  var empdepData = getFormData($("#emp_dep-form").serializeArray());
+  empdepData.effect_from =
+    moment(empdepData.effect_from, "DD-MM-YYYY").format("YYYY-MM-DD") +
+    "T00:00:00Z";
+
+  console.log(data);
+
+  updateEmpReq(data);
+});
+
+function updateEmpReq(empData) {
+  var updateEmpReq = $.ajax({
+    url: `http://localhost:8080/api/employee?employeeid=${empData.employee_id}`,
+    method: "PATCH",
+    data: JSON.stringify(empData),
+  });
+
+  updateEmpReq.done((res) => {
+    if (res.status == 200) {
+      console.log("success");
+    }
+  });
+
+  updateEmpReq.fail(function (jqXHR, textStatus) {
+    alert("Request failed: " + textStatus);
+    console.log("Request failed: " + textStatus);
+  });
+}
