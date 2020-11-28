@@ -13,11 +13,15 @@ $(document).ready(() => {
                                 ${val.full_name}
                             </td>
                             <td id="phoneNumber">${val.phone_number}</td>
+                            <td id="phoneNumber">${val.email}</td>
                             <td id="departmentName">${val.department_name}</td>
                             <td>
-                              <button id="emp-btn-${val.employee_id}" type="button" class="btn btn-primary detail-btn" data-id="${val.employee_id}">
-                                Detail
-                              </button>
+                                <button id="emp-btn-${val.employee_id}" type="button" class="btn btn-primary detail-btn" data-id="${val.employee_id}">
+                                <i class="far fa-edit"></i> Detail
+                                </button>
+                                <button id="del-emp-btn-${val.employee_id}" type="button" class="btn btn-danger delete-btn" data-id="${val.employee_id}">
+                                <i class="far fa-trash-alt"></i> Delete
+                                </button>
                             </td>
                         </tr>`;
       $("#employees_table tbody").append(trElement);
@@ -26,6 +30,32 @@ $(document).ready(() => {
 
       $(btnIdSelector).click(() => {
         getEmployeeById(val.employee_id);
+      });
+
+      var btnDelSelector = `#del-emp-btn-${val.employee_id}`;
+
+      $(btnDelSelector).click(() => {
+        swal({
+          dangerMode: true,
+          title: "Are you sure?",
+          text: `Delete '${val.full_name} - ID: ${val.employee_id}'`,
+          icon: "warning",
+          buttons: {
+            cancel: "Cancel",
+            yes: true,
+          },
+        }).then((value) => {
+          switch (value) {
+            case "cancel":
+              swal.close();
+              break;
+
+            case "yes":
+              swal.close();
+              delEmployee(val.employee_id);
+              break;
+          }
+        });
       });
     });
 
@@ -106,6 +136,34 @@ var getEmployeeById = (employeeId) => {
   });
 };
 
+var delEmployee = (employeeId) => {
+  var request = $.ajax({
+    url: `http://localhost:8080/api/employee?employeeid=${employeeId}`,
+    method: "DELETE",
+  });
+
+  request.done((res) => {
+    if (res.status == 200) {
+      // remove deleted employee row
+      $(`#employee-${employeeId}`).remove();
+
+      swal({
+        title: "Deleted successfully!",
+        icon: "success",
+        button: "OK",
+      });
+    }
+  });
+
+  request.fail((jqXHR, textStatus) => {
+    swal({
+      title: "Error!",
+      icon: "error",
+      button: "Close",
+    });
+  });
+};
+
 var getFormData = (unindexed_array) => {
   var indexed_array = {};
 
@@ -124,6 +182,13 @@ $("#close-btn").click(() => {
 $(".close").click(() => {
   $("#emp-modal").removeClass("show");
   $("#emp-modal").css({ display: "none", background: "none" });
+  $("#add-emp-modal").removeClass("show");
+  $("#add-emp-modal").css({ display: "none", background: "none" });
+});
+
+$("#add-emp-close-btn").click(() => {
+  $("#add-emp-modal").removeClass("show");
+  $("#add-emp-modal").css({ display: "none", background: "none" });
 });
 
 $("#save-btn").click(() => {
@@ -168,8 +233,12 @@ function updateEmpReq(empData) {
   });
 
   updateEmpReq.fail(function (jqXHR, textStatus) {
-    alert("Request failed: " + textStatus);
-    console.log("Request failed: " + textStatus);
+    swal({
+      title: "Error!",
+      text: textStatus,
+      icon: "error",
+      button: "Close",
+    });
   });
 }
 
@@ -183,21 +252,38 @@ function changeDepartment(empdepData) {
 
   changeDepReq.done((res) => {
     if (res.status == 200) {
-      console.log(empdepData);
       $(`#employee-${empdepData.employee_id} #departmentName`).text(
         `${empdepData.department_name}`
       );
+
+      $("#add-emp-modal").removeClass("show");
+      $("#add-emp-modal").css({ display: "none", background: "none" });
+
+      $("#emp-modal").removeClass("show");
+      $("#emp-modal").css({ display: "none", background: "none" });
+
+      swal({
+        title: "Successfully!",
+        icon: "success",
+        button: "OK",
+      });
     }
   });
 
   changeDepReq.fail(function (jqXHR, textStatus) {
-    alert("Request failed: " + textStatus);
-    console.log("Request failed: " + textStatus);
+    swal({
+      title: "Error",
+      text: textStatus,
+      icon: "error",
+      button: "Close",
+    });
   });
 }
 
 //ADD EMPLOYEE
 $("#add-emp-btn").click(() => {
+  $("#add-emp-modal form").get(0).reset();
+  $("#add-emp-modal form").get(1).reset();
   $("#add-emp-modal").addClass("show");
   $("#add-emp-modal").css({
     display: "block",
@@ -217,6 +303,121 @@ $("#add-emp-btn").click(() => {
       $("#add-emp_dep-form #input_department_name").append(option);
     });
   });
+
+  $("#add-emp_dep-form #input_effect_from").datetimepicker({
+    timepicker: false,
+    datepicker: true,
+    format: "d-m-yy",
+  });
 });
 
-$("#submit-btn").click(() => {});
+$("#submit-btn").click(() => {
+  var empData = getFormData($("#add-emp-form").serializeArray());
+  empData.gender = empData.gender == "Male" ? true : false;
+
+  addEmpReq(empData);
+});
+
+function addEmpReq(empData) {
+  var addEmpReq = $.ajax({
+    url: `http://localhost:8080/api/employee`,
+    method: "POST",
+    data: JSON.stringify(empData),
+    contentType: "application/json",
+  });
+
+  addEmpReq.done((res) => {
+    if (res.status == 200) {
+      // get inserted employee
+      getEmpReq(empData);
+    }
+  });
+
+  addEmpReq.fail(function (jqXHR, textStatus) {
+    swal({
+      title: "Error!",
+      text: textStatus,
+      icon: "error",
+      button: "OK",
+    });
+  });
+}
+
+function getEmpReq(empData) {
+  let req = $.ajax({
+    url: `http://localhost:8080/api/employee/email?email=${empData.email}`,
+    method: "GET",
+  });
+
+  req.done((res) => {
+    console.log(res.data);
+    const newEmp = res.data[0];
+    const trElement = `<tr id="employee-${newEmp.employee_id}">
+                            <td id="employeeId">${newEmp.employee_id}</td>
+                            <td id="fullName">
+                                ${newEmp.full_name}
+                            </td>
+                            <td id="phoneNumber">${newEmp.phone_number}</td>
+                            <td id="phoneNumber">${newEmp.email}</td>
+                            <td id="departmentName">${newEmp.department_name}</td>
+                            <td>
+                              <button id="emp-btn-${newEmp.employee_id}" type="button" class="btn btn-primary detail-btn" data-id="${newEmp.employee_id}">
+                              <i class="far fa-edit"></i> Detail
+                              </button>
+                              <button id="del-emp-btn-${newEmp.employee_id}" type="button" class="btn btn-danger delete-btn" data-id="${newEmp.employee_id}">
+                              <i class="far fa-trash-alt"></i> Delete
+                              </button>
+                            </td>
+                        </tr>`;
+    $("#employees_table tbody").append(trElement);
+
+    var btnIdSelector = `#emp-btn-${newEmp.employee_id}`;
+
+    $(btnIdSelector).click(() => {
+      getEmployeeById(newEmp.employee_id);
+    });
+
+    var btnDelSelector = `#del-emp-btn-${newEmp.employee_id}`;
+
+    $(btnDelSelector).click(() => {
+      swal({
+        dangerMode: true,
+        title: "Are you sure?",
+        text: `Delete '${newEmp.full_name} - ID: ${newEmp.employee_id}'`,
+        icon: "warning",
+        buttons: {
+          cancel: "Cancel",
+          yes: true,
+        },
+      }).then((value) => {
+        switch (value) {
+          case "cancel":
+            swal.close();
+            break;
+
+          case "yes":
+            swal.close();
+            delEmployee(newEmp.employee_id);
+            break;
+        }
+      });
+    });
+
+    var empdepData = getFormData($("#add-emp_dep-form").serializeArray());
+    empdepData.effect_from =
+      moment(empdepData.effect_from, "DD-MM-YYYY").format("YYYY-MM-DD") +
+      "T00:00:00Z";
+    empdepData.employee_id = Number(newEmp.employee_id);
+    empdepData.department_id = Number(empdepData.department_id);
+    empdepData.department_name = $(
+      "#add-emp_dep-form #input_department_name option:selected"
+    ).text();
+
+    changeDepartment(empdepData);
+  });
+
+  req.fail(function (jqXHR, textStatus) {
+    alert("Request failed: " + textStatus);
+    console.log("Request failed: " + textStatus);
+  });
+}

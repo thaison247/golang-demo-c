@@ -102,6 +102,26 @@ func GetEmployeeById(c echo.Context) error {
 	return ApiResult(c, http.StatusOK, rs)
 }
 
+func GetEmployeeByEmail(c echo.Context) error {
+	var email string
+	var err error
+
+	email = c.QueryParam("email")
+
+	fmt.Println(email)
+
+	dbType := utils.Global[utils.POSTGRES_ENTITY].(database.Postgres)
+	rs, err := model.GetEmployeeByEmail(dbType, email)
+
+	fmt.Println(rs)
+	if err != nil {
+		fmt.Println(err)
+		return ApiResult(c, http.StatusBadRequest, err)
+	}
+
+	return ApiResult(c, http.StatusOK, rs)
+}
+
 func UpdateEmployee(c echo.Context) error {
 	var employeeId int
 	var err error

@@ -30,13 +30,14 @@ func AddEmployeeToDepartment(c echo.Context) error {
 	jsonData, err := json.Marshal(dataReq)
 	var newData map[string]interface{}
 	err = json.Unmarshal([]byte(jsonData), &newData)
-
+	fmt.Println(newData)
 	dbType := utils.Global[utils.POSTGRES_ENTITY].(database.Postgres)
 
 	delete(newData, "id")
 	_, err = model.AddEmployeeToDeparmentWithMap(dbType, newData)
 
 	if err != nil {
+		fmt.Println("res error: ", err)
 		return ApiResult(c, http.StatusBadRequest, err)
 	}
 

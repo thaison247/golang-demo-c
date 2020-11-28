@@ -16,6 +16,7 @@ func defineRoutes(e *echo.Echo) {
 
 	e.GET("/api/employee/all", controller.GetAllEmployees)
 	e.GET("/api/employee", controller.GetEmployeeById)
+	e.GET("/api/employee/email", controller.GetEmployeeByEmail)
 	e.POST("/api/employee", controller.CreateEmployeeV2)
 	e.PUT("/api/employee", controller.UpdateEmployee)
 	e.DELETE("/api/employee", controller.DeleteEmployee)

@@ -17,7 +17,8 @@ Management | {{index . "page-title"}}
                     <div class="card-header">
                         <h3 class="card-title">DataTable with minimal features & hover style</h3>
                     </div>
-                    <button id="add-emp-btn" type="button" class="btn btn-outline-success add-emp-btn">ADD
+                    <button id="add-emp-btn" type="button" class="btn btn-success add-emp-btn"><i
+                            class="fas fa-plus-circle"></i> ADD
                         EMPLOYEE</button>
                     <!-- /.card-header -->
                     <div class="card-body">
@@ -27,6 +28,7 @@ Management | {{index . "page-title"}}
                                     <th>ID</th>
                                     <th>Full name</th>
                                     <th>Phone number</th>
+                                    <th>Email</th>
                                     <th>Department</th>
                                     <th>Operators</th>
                                 </tr>
@@ -52,31 +54,38 @@ Management | {{index . "page-title"}}
                             <div class="modal-body">
                                 <form id="emp-form">
                                     <div class="form-group">
-                                        <input name="employee_id" type="hidden" class="form-control" id="employee_id">
+                                        <input name="employee_id" type="hidden" class="form-control" id="employee_id"
+                                            required>
                                     </div>
                                     <div class="form-group">
                                         <label for="full_name">Full name</label>
-                                        <input name="full_name" type="text" class="form-control" id="full_name">
+                                        <input name="full_name" type="text" class="form-control" id="full_name"
+                                            required>
                                     </div>
                                     <div class="form-group">
                                         <label for="gender">Gender</label>
-                                        <input name="gender" type="text" class="form-control" id="gender">
+                                        <select name="gender" id="gender" class="custom-select" required>
+                                            <option value="Female">Female</option>
+                                            <option value="Male">Male</option>
+                                        </select>
                                     </div>
                                     <div class="form-group">
                                         <label for="email">Email address</label>
-                                        <input name="email" type="email" class="form-control" id="email">
+                                        <input name="email" type="email" class="form-control" id="email" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="phone_number">Phone number</label>
-                                        <input name="phone_number" type="text" class="form-control" id="phone_number">
+                                        <input name="phone_number" type="text" class="form-control" id="phone_number"
+                                            required>
                                     </div>
                                     <div class="form-group">
                                         <label for="address">Address</label>
-                                        <input name="address" type="text" class="form-control" id="address">
+                                        <input name="address" type="text" class="form-control" id="address" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="job_title">Job title</label>
-                                        <input name="job_title" type="text" class="form-control" id="job_title">
+                                        <input name="job_title" type="text" class="form-control" id="job_title"
+                                            required>
                                     </div>
                                 </form>
                                 <form id="emp_dep-form">
@@ -87,12 +96,14 @@ Management | {{index . "page-title"}}
                                         <div class="form-group">
                                             <label for="department_name">Department</label>
                                             <!-- <input type="text" class="form-control" id="department_name"> -->
-                                            <select name="department_id" class="custom-select" id="department_name">
+                                            <select name="department_id" class="custom-select" id="department_name"
+                                                required>
                                             </select>
                                         </div>
                                         <div class="form-group">
                                             <label for="effect_from">Effect from</label>
-                                            <input name="effect_from" type="text" class="form-control" id="effect_from">
+                                            <input name="effect_from" type="text" class="form-control" id="effect_from"
+                                                required>
                                         </div>
                                     </div>
                                 </form>
@@ -120,49 +131,49 @@ Management | {{index . "page-title"}}
                             <div class="modal-body">
                                 <form id="add-emp-form">
                                     <div class="form-group">
-                                        <input name="employee_id" type="hidden" class="form-control" id="employee_id">
-                                    </div>
-                                    <div class="form-group">
                                         <label for="full_name">Full name</label>
-                                        <input name="full_name" type="text" class="form-control" id="full_name">
+                                        <input name="full_name" type="text" class="form-control" id="full_name"
+                                            required>
                                     </div>
                                     <div class="form-group">
                                         <label for="gender">Gender</label>
-                                        <input name="gender" type="text" class="form-control" id="gender">
+                                        <select name="gender" id="input_gender" class="custom-select" required>
+                                            <option value="Female">Female</option>
+                                            <option value="Male">Male</option>
+                                        </select>
                                     </div>
                                     <div class="form-group">
                                         <label for="email">Email address</label>
-                                        <input name="email" type="email" class="form-control" id="email">
+                                        <input name="email" type="email" class="form-control" id="email" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="phone_number">Phone number</label>
-                                        <input name="phone_number" type="text" class="form-control" id="phone_number">
+                                        <input name="phone_number" type="text" class="form-control" id="phone_number"
+                                            required>
                                     </div>
                                     <div class="form-group">
                                         <label for="address">Address</label>
-                                        <input name="address" type="text" class="form-control" id="address">
+                                        <input name="address" type="text" class="form-control" id="address" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="job_title">Job title</label>
-                                        <input name="job_title" type="text" class="form-control" id="input_job_title">
+                                        <input name="job_title" type="text" class="form-control" id="input_job_title"
+                                            required>
                                     </div>
                                 </form>
                                 <form id="add-emp_dep-form">
-                                    <!-- <div class="form-group">
-                                        <input name="employee_id" type="hidden" class="form-control" id="employee_id">
-                                    </div> -->
                                     <div class="department-info">
                                         <div class="form-group">
                                             <label for="department_name">Department</label>
                                             <!-- <input type="text" class="form-control" id="department_name"> -->
                                             <select name="department_id" class="custom-select"
-                                                id="input_department_name">
+                                                id="input_department_name" required>
                                             </select>
                                         </div>
                                         <div class="form-group">
                                             <label for="effect_from">Effect from</label>
                                             <input name="effect_from" type="text" class="form-control"
-                                                id="input_effect_from">
+                                                id="input_effect_from" required>
                                         </div>
                                     </div>
                                 </form>
