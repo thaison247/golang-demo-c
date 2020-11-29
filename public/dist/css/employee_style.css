@@ -8,3 +8,7 @@
     width: 20%;
     margin: 10px 0 0 20px;
 }
+
+td .operators {
+    text-align: center;
+}

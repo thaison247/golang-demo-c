@@ -1,6 +1,6 @@
 $(document).ready(() => {
   var request = $.ajax({
-    url: "http://localhost:8080/api/employee/all?limit=10&offset=0",
+    url: "http://localhost:8080/api/employee/all?limit=50&offset=0",
     method: "GET",
   });
 
@@ -15,7 +15,7 @@ $(document).ready(() => {
                             <td id="phoneNumber">${val.phone_number}</td>
                             <td id="phoneNumber">${val.email}</td>
                             <td id="departmentName">${val.department_name}</td>
-                            <td>
+                            <td class="operators" style="text-align: center;">
                                 <button id="emp-btn-${val.employee_id}" type="button" class="btn btn-primary detail-btn" data-id="${val.employee_id}">
                                 <i class="far fa-edit"></i> Detail
                                 </button>
@@ -35,34 +35,14 @@ $(document).ready(() => {
       var btnDelSelector = `#del-emp-btn-${val.employee_id}`;
 
       $(btnDelSelector).click(() => {
-        swal({
-          dangerMode: true,
-          title: "Are you sure?",
-          text: `Delete '${val.full_name} - ID: ${val.employee_id}'`,
-          icon: "warning",
-          buttons: {
-            cancel: "Cancel",
-            yes: true,
-          },
-        }).then((value) => {
-          switch (value) {
-            case "cancel":
-              swal.close();
-              break;
-
-            case "yes":
-              swal.close();
-              delEmployee(val.employee_id);
-              break;
-          }
-        });
+        deleteEmployee(val.employee_id, val.employee_name);
       });
     });
 
     $("#employees_table").DataTable({
-      paging: true,
+      paging: false,
       lengthChange: false,
-      searching: false,
+      searching: true,
       ordering: true,
       info: true,
       autoWidth: false,
@@ -73,12 +53,9 @@ $(document).ready(() => {
   request.fail(function (jqXHR, textStatus) {
     alert("Request failed: " + textStatus);
   });
-
-  // $("#employee-nav-link").addClass("active");
 });
 
 var getEmployeeById = (employeeId) => {
-  console.log(`http://localhost:8080/api/employee?employeeid=${employeeId}`);
   var request = $.ajax({
     url: `http://localhost:8080/api/employee?employeeid=${employeeId}`,
     method: "GET",
@@ -133,6 +110,30 @@ var getEmployeeById = (employeeId) => {
 
   request.fail(function (jqXHR, textStatus) {
     alert("Request failed: " + textStatus);
+  });
+};
+
+var deleteEmployee = (employeeId, employeeName) => {
+  swal({
+    dangerMode: true,
+    title: "Are you sure?",
+    text: `Delete '${employeeName} - ID: ${employeeId}'`,
+    icon: "warning",
+    buttons: {
+      cancel: "Cancel",
+      yes: true,
+    },
+  }).then((value) => {
+    switch (value) {
+      case "cancel":
+        swal.close();
+        break;
+
+      case "yes":
+        swal.close();
+        delEmployee(employeeId);
+        break;
+    }
   });
 };
 

@@ -6,30 +6,34 @@ $(document).ready(() => {
 
   request.done(function (msg) {
     var listDepartments = msg.data;
-    $.each(listDepartments, function (i, val) {
-      const trElement = `<tr>
-                            <td>${val.department_id}</td>
-                            <td>
-                                ${val.department_name}
-                            </td>
-                            <td>${val.department_code}</td>
-                            <td>${moment(new Date(val.created_at), "LLL")}</td>
-                        </tr>`;
-      $("#departments_table tbody").append(trElement);
-    });
-
-    $("#departments_table").DataTable({
-      paging: true,
-      lengthChange: false,
-      searching: false,
-      ordering: true,
-      info: true,
-      autoWidth: false,
-      responsive: true,
-    });
+    renderListDepartments(listDepartments);
   });
 
   request.fail(function (jqXHR, textStatus) {
     alert("Request failed: " + textStatus);
   });
+});
+
+$("#close-btn").click(() => {
+  $("#dep-modal").removeClass("show");
+  $("#dep-modal").css({ display: "none", background: "none" });
+});
+
+$(".close").click(() => {
+  $("#dep-modal").removeClass("show");
+  $("#dep-modal").css({ display: "none", background: "none" });
+  $("#add-dep-modal").removeClass("show");
+  $("#add-dep-modal").css({ display: "none", background: "none" });
+});
+
+$("#add-dep-close-btn").click(() => {
+  $("#add-dep-modal").removeClass("show");
+  $("#add-dep-modal").css({ display: "none", background: "none" });
+});
+
+$("#save-btn").click(() => {
+  var depData = getFormData($("#dep-form").serializeArray());
+  depData.department_id = Number(depData.department_id);
+
+  updateDepReq(depData);
 });
