@@ -47,7 +47,7 @@ $("#add-dep-btn").click(() => {
   });
 });
 
-$("#submit-btn").click(() => {
+$("#add-dep-submit-btn").click(() => {
   var depData = getFormData($("#add-dep-form").serializeArray());
 
   addDepReq(depData);

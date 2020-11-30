@@ -23,7 +23,7 @@ func defineRoutes(e *echo.Echo) {
 
 	e.GET("/api/department/all", controller.GetDepartments)
 	e.GET("/api/department", controller.GetDepartmentById)
-	// e.GET("/api/department/name", controller.GetDepartmentByName)
+	e.GET("/api/department/name", controller.GetDepartmentByName)
 	e.POST("/api/department", controller.CreateDepartment)
 	e.PATCH("/api/department", controller.UpdateDepartment)
 	e.DELETE("/api/department", controller.DeleteDepartment)

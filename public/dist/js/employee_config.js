@@ -259,16 +259,20 @@ function changeDepartment(empdepData) {
       });
 
       getDepReq.done((res) => {
-        var employee = res.data;
-        $(`#employee-${employee.employee_id} #departmentName`).text(
-          `${employee.department_name}`
-        );
+        var department = res.data[0];
+        if (!department) {
+          $(`#employee-${empdepData.employee_id}`).remove();
+        } else {
+          $(`#employee-${empdepData.employee_id} #departmentName`).text(
+            `${department.department_name}`
+          );
 
-        $("#add-emp-modal").removeClass("show");
-        $("#add-emp-modal").css({ display: "none", background: "none" });
+          $("#add-emp-modal").removeClass("show");
+          $("#add-emp-modal").css({ display: "none", background: "none" });
 
-        $("#emp-modal").removeClass("show");
-        $("#emp-modal").css({ display: "none", background: "none" });
+          $("#emp-modal").removeClass("show");
+          $("#emp-modal").css({ display: "none", background: "none" });
+        }
 
         swal({
           title: "Successfully!",

@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"fmt"
 	"main/model"
 	"main/structs"
 	"main/utils"
@@ -22,6 +23,7 @@ func CreateDepartment(c echo.Context) error {
 
 	dataReq := new(structs.Department)
 	if err = c.Bind(dataReq); err != nil {
+		fmt.Println(err)
 		return ApiResult(c, http.StatusBadRequest, err)
 	}
 
@@ -30,10 +32,12 @@ func CreateDepartment(c echo.Context) error {
 	err = json.Unmarshal([]byte(jsonData), &newData)
 
 	delete(newData, "department_id")
+	fmt.Println(newData)
 
 	dbType := utils.Global[utils.POSTGRES_ENTITY].(database.Postgres)
-	_, err = model.Create(dbType, DEPARTMENTS, dataReq)
+	_, err = model.CreateDepartmentWithMap(dbType, newData)
 	if err != nil {
+		fmt.Println(err)
 		return ApiResult(c, http.StatusBadRequest, err)
 	}
 
@@ -81,21 +85,20 @@ func GetDepartmentById(c echo.Context) error {
 	return ApiResult(c, http.StatusOK, rs)
 }
 
-// func GetDepartmentByName(c echo.Context) error {
+func GetDepartmentByName(c echo.Context) error {
 
-// 	if departmentId, err = strconv.Atoi(c.QueryParam("departmentid")); err != nil {
-// 		return ApiResult(c, http.StatusBadRequest, err)
-// 	}
+	departmentName := c.QueryParam("departmentname")
 
-// 	dbType := utils.Global[utils.POSTGRES_ENTITY].(database.Postgres)
-// 	rs, err := model.GetDepartmentById(dbType, departmentId)
+	dbType := utils.Global[utils.POSTGRES_ENTITY].(database.Postgres)
+	rs, err := model.GetDepartmentByName(dbType, departmentName)
 
-// 	if err != nil {
-// 		return ApiResult(c, http.StatusBadRequest, err)
-// 	}
+	if err != nil {
+		fmt.Println(err)
+		return ApiResult(c, http.StatusBadRequest, err)
+	}
 
-// 	return ApiResult(c, http.StatusOK, rs)
-// }
+	return ApiResult(c, http.StatusOK, rs)
+}
 
 func UpdateDepartment(c echo.Context) error {
 	var departmentId int

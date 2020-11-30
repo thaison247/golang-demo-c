@@ -192,7 +192,7 @@ var addDepReq = (depData) => {
   addRequest.done((res) => {
     if (res.status == 200) {
       // get inserted employee
-      getDepByName(depData);
+      getDepByName(depData.department_name);
     }
   });
 
@@ -206,4 +206,79 @@ var addDepReq = (depData) => {
   });
 };
 
-var getDepByName = (depName) => {};
+var getDepByName = (depName) => {
+  var getRequest = $.ajax({
+    url: `http://localhost:8080/api/department/name?departmentname=${depName}`,
+    method: "GET",
+  });
+  getRequest.done((res) => {
+    var newDepartment = res.data[0];
+    console.log(newDepartment);
+    var trElement = `<tr id="department-${newDepartment.department_id}">
+                            <td id="departmentId">${
+                              newDepartment.department_id
+                            }</td>
+                            <td id="departmentName">
+                                ${newDepartment.department_name}
+                            </td>
+                            <td id="departmentCode">${
+                              newDepartment.department_code
+                            }</td>
+                            <td id="createdAt">${moment(
+                              new Date(newDepartment.created_at),
+                              "LLL"
+                            )}</td>
+                            <td class="operators" style="text-align: center;">
+                                <button id="dep-btn-${
+                                  newDepartment.department_id
+                                }" type="button" class="btn btn-primary detail-btn" data-id="${
+      newDepartment.department_id
+    }">
+                                <i class="far fa-edit"></i> Detail
+                                </button>
+                                <button id="del-dep-btn-${
+                                  newDepartment.department_id
+                                }" type="button" class="btn btn-danger delete-btn" data-id="${
+      newDepartment.department_id
+    }">
+                                <i class="far fa-trash-alt"></i> Delete
+                                </button>
+                            </td>
+                        </tr>`;
+    $("#departments_table tbody").append(trElement);
+
+    var btnIdSelector = `#dep-btn-${newDepartment.department_id}`;
+    $(btnIdSelector).click(() => {
+      getDepartmentById(newDepartment.department_id);
+    });
+
+    var btnDelSelector = `#del-dep-btn-${newDepartment.department_id}`;
+    $(btnDelSelector).click(() => {
+      deleteDepartment(
+        newDepartment.department_id,
+        newDepartment.department_name
+      );
+    });
+
+    $("#add-dep-modal").removeClass("show");
+    $("#add-dep-modal").css({
+      display: "none",
+      background: "none",
+    });
+
+    swal({
+      title: "Successfully!",
+      icon: "success",
+      button: "OK",
+    });
+  });
+
+  getRequest.fail((jqXHR, textStatus) => {
+    swal({
+      title: "Error!",
+      text: textStatus,
+      icon: "error",
+      button: "Close",
+    });
+  });
+};
