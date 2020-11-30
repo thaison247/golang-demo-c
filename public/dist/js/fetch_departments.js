@@ -10,12 +10,16 @@ var getFormData = (unindexed_array) => {
 
 var renderListDepartments = (listDepartments) => {
   $.each(listDepartments, function (i, val) {
+    val.department_status = val.active ? "Active" : "Inactive";
     const trElement = `<tr id="department-${val.department_id}">
                             <td id="departmentId">${val.department_id}</td>
                             <td id="departmentName">
                                 ${val.department_name}
                             </td>
                             <td id="departmentCode">${val.department_code}</td>
+                            <td id="departmentStatus">${
+                              val.department_status
+                            }</td>
                             <td id="createdAt">${moment(
                               new Date(val.created_at),
                               "LLL"
@@ -58,6 +62,8 @@ var renderListDepartments = (listDepartments) => {
     info: true,
     autoWidth: false,
     responsive: true,
+    bInfo: false,
+    info: false,
   });
 };
 
@@ -76,6 +82,8 @@ var getDepartmentById = (departmentId) => {
     $("#dep-form #department_id").val(department.department_id);
     $("#dep-form #department_name").val(department.department_name);
     $("#dep-form #department_code").val(department.department_code);
+    var active = department.active ? "Active" : "Inactive";
+    $("#dep-form #active").val(active);
     var momentDate = moment(department.created_at).format(
       "DD-MM-YYYY hh:mm:ss"
     );
@@ -160,6 +168,11 @@ var updateDepReq = (depData) => {
         `${depData.department_code}`
       );
 
+      var status = depData.active ? "Active" : "Inactive";
+      $(`#department-${depData.department_id} #departmentStatus`).text(
+        `${status}`
+      );
+
       $("#dep-modal").removeClass("show");
       $("#dep-modal").css({ display: "none", background: "none" });
 
@@ -214,6 +227,7 @@ var getDepByName = (depName) => {
   getRequest.done((res) => {
     var newDepartment = res.data[0];
     console.log(newDepartment);
+    var status = newDepartment.active ? "Active" : "Inactive";
     var trElement = `<tr id="department-${newDepartment.department_id}">
                             <td id="departmentId">${
                               newDepartment.department_id
@@ -224,6 +238,7 @@ var getDepByName = (depName) => {
                             <td id="departmentCode">${
                               newDepartment.department_code
                             }</td>
+                            <td id="departmentStatus">${status}</td>
                             <td id="createdAt">${moment(
                               new Date(newDepartment.created_at),
                               "LLL"

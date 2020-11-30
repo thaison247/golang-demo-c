@@ -34,6 +34,7 @@ $("#add-dep-close-btn").click(() => {
 $("#save-btn").click(() => {
   var depData = getFormData($("#dep-form").serializeArray());
   depData.department_id = Number(depData.department_id);
+  depData.active = depData.active == "Active" ? true : false;
 
   updateDepReq(depData);
 });
@@ -49,6 +50,7 @@ $("#add-dep-btn").click(() => {
 
 $("#add-dep-submit-btn").click(() => {
   var depData = getFormData($("#add-dep-form").serializeArray());
+  depData.active = depData.active == "Active" ? true : false;
 
   addDepReq(depData);
 });

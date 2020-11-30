@@ -10,8 +10,6 @@ var (
 
 const SQL_CUSTOM_GET_EMPLOYEE_BY_ID = "" + "SELECT * FROM get_one_employee_with_department($1)"
 
-const SQL_CUSTOM_GET_EMPLOYEE_WITH_DEPARTMENTID = "" + "SELECT * " + "FROM get_employees_with_departmentid($1, $2)"
-
 const SQL_CUSTOM_GET_EMPLOYEES_WITH_DEPARTMENT = "" + "SELECT * " + "FROM get_employees_with_department($1, $2)"
 
 const SQL_CUSTOM_GET_EMPLOYEE_BY_EMAIL = "" + "SELECT * FROM employees WHERE email = ($1)"
@@ -19,11 +17,6 @@ const SQL_CUSTOM_GET_EMPLOYEE_BY_EMAIL = "" + "SELECT * FROM employees WHERE ema
 func GetEmployeeById(dbType database.IDatabase, id int) (interface{}, error) {
 	params := []interface{}{id}
 	return dbType.ExecuteSelectToMap(SQL_CUSTOM_GET_EMPLOYEE_BY_ID, params)
-}
-
-func GetEmployeesWithDepartmentId(dbType database.IDatabase, limit int, offset int) ([]map[string]interface{}, error) {
-	params := []interface{}{limit, offset}
-	return dbType.ExecuteSelectToMap(SQL_CUSTOM_GET_EMPLOYEE_WITH_DEPARTMENTID, params)
 }
 
 func GetEmployeesWithDepartment(dbType database.IDatabase, limit int, offset int) ([]map[string]interface{}, error) {

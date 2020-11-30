@@ -47,6 +47,7 @@ $(document).ready(() => {
       info: true,
       autoWidth: false,
       responsive: true,
+      info: false,
     });
   });
 
@@ -373,7 +374,7 @@ function getEmpReq(empData) {
                             <td id="phoneNumber">${newEmp.phone_number}</td>
                             <td id="phoneNumber">${newEmp.email}</td>
                             <td id="departmentName">${newEmp.department_name}</td>
-                            <td>
+                            <td style="text-align: center;">
                               <button id="emp-btn-${newEmp.employee_id}" type="button" class="btn btn-primary detail-btn" data-id="${newEmp.employee_id}">
                               <i class="far fa-edit"></i> Detail
                               </button>
