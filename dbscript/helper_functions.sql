@@ -11,7 +11,7 @@ create or replace function get_employees_with_department (
 		gender boolean,
 		job_title text,
 		created_at timestamp with time zone,
-		updated_at date,
+		updated_at timestamp with time zone,
 		address text,
 		department_id int,
 		department_code varchar(5),
@@ -30,8 +30,9 @@ begin
 		where
 			ed.id = (select emp_dep.id from emp_dep where emp_dep.employee_id = e.employee_id and emp_dep.effect_from <= now() 
 					 and emp_dep.created_at = (select max(ed1.created_at)
-											    from emp_dep ed1
-											    where ed1.employee_id = e.employee_id))
+											   from emp_dep ed1
+											   where ed1.employee_id = emp_dep.employee_id
+											  		  and ed1.effect_from <= now()))
 		limit p_limit offset p_offset;
 end;$$
 
@@ -113,7 +114,7 @@ create or replace function get_one_employee_with_department (
 		gender boolean,
 		job_title text,
 		created_at timestamp with time zone,
-		updated_at date,
+		updated_at timestamp with time zone,
 		address text,
 		department_id int,
 		department_code varchar(5),
@@ -134,8 +135,9 @@ begin
 			e.employee_id = p_employee_id and
 			ed.id = (select emp_dep.id from emp_dep where emp_dep.employee_id = p_employee_id and emp_dep.effect_from <= now() 
 					 and emp_dep.created_at = (select max(ed1.created_at)
-											    from emp_dep ed1
-											    where ed1.employee_id = p_employee_id));
+											   from emp_dep ed1
+											   where ed1.employee_id = emp_dep.employee_id
+											  		  and ed1.effect_from <= now()));
 end;$$
 
 -- get employee's department id

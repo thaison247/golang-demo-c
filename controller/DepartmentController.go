@@ -7,6 +7,7 @@ import (
 	"main/utils"
 	"net/http"
 	"strconv"
+	"time"
 
 	database "g.ghn.vn/scte-common/godal"
 	"github.com/labstack/echo/v4"
@@ -80,6 +81,22 @@ func GetDepartmentById(c echo.Context) error {
 	return ApiResult(c, http.StatusOK, rs)
 }
 
+// func GetDepartmentByName(c echo.Context) error {
+
+// 	if departmentId, err = strconv.Atoi(c.QueryParam("departmentid")); err != nil {
+// 		return ApiResult(c, http.StatusBadRequest, err)
+// 	}
+
+// 	dbType := utils.Global[utils.POSTGRES_ENTITY].(database.Postgres)
+// 	rs, err := model.GetDepartmentById(dbType, departmentId)
+
+// 	if err != nil {
+// 		return ApiResult(c, http.StatusBadRequest, err)
+// 	}
+
+// 	return ApiResult(c, http.StatusOK, rs)
+// }
+
 func UpdateDepartment(c echo.Context) error {
 	var departmentId int
 	var err error
@@ -96,6 +113,8 @@ func UpdateDepartment(c echo.Context) error {
 	jsonData, err := json.Marshal(dataReq)
 	var newData map[string]interface{}
 	err = json.Unmarshal([]byte(jsonData), &newData)
+	currentTime := time.Now()
+	newData["updated_at"] = string(currentTime.Format(time.RFC3339))
 
 	dbType := utils.Global[utils.POSTGRES_ENTITY].(database.Postgres)
 

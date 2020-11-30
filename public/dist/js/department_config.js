@@ -1,6 +1,6 @@
 $(document).ready(() => {
   var request = $.ajax({
-    url: "http://localhost:8080/api/department/all?limit=10&offset=0",
+    url: "http://localhost:8080/api/department/all?limit=15&offset=0",
     method: "GET",
   });
 
@@ -36,4 +36,19 @@ $("#save-btn").click(() => {
   depData.department_id = Number(depData.department_id);
 
   updateDepReq(depData);
+});
+
+$("#add-dep-btn").click(() => {
+  $("#add-dep-modal form").get(0).reset();
+  $("#add-dep-modal").addClass("show");
+  $("#add-dep-modal").css({
+    display: "block",
+    background: "rgba(0, 0, 0, 0.4)",
+  });
+});
+
+$("#submit-btn").click(() => {
+  var depData = getFormData($("#add-dep-form").serializeArray());
+
+  addDepReq(depData);
 });

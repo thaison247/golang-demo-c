@@ -253,20 +253,28 @@ function changeDepartment(empdepData) {
 
   changeDepReq.done((res) => {
     if (res.status == 200) {
-      $(`#employee-${empdepData.employee_id} #departmentName`).text(
-        `${empdepData.department_name}`
-      );
+      var getDepReq = $.ajax({
+        url: `http://localhost:8080/api/employee?employeeid=${empdepData.employee_id}`,
+        method: "GET",
+      });
 
-      $("#add-emp-modal").removeClass("show");
-      $("#add-emp-modal").css({ display: "none", background: "none" });
+      getDepReq.done((res) => {
+        var employee = res.data;
+        $(`#employee-${employee.employee_id} #departmentName`).text(
+          `${employee.department_name}`
+        );
 
-      $("#emp-modal").removeClass("show");
-      $("#emp-modal").css({ display: "none", background: "none" });
+        $("#add-emp-modal").removeClass("show");
+        $("#add-emp-modal").css({ display: "none", background: "none" });
 
-      swal({
-        title: "Successfully!",
-        icon: "success",
-        button: "OK",
+        $("#emp-modal").removeClass("show");
+        $("#emp-modal").css({ display: "none", background: "none" });
+
+        swal({
+          title: "Successfully!",
+          icon: "success",
+          button: "OK",
+        });
       });
     }
   });

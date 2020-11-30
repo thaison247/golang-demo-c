@@ -53,7 +53,7 @@ var renderListDepartments = (listDepartments) => {
   $("#departments_table").DataTable({
     paging: false,
     lengthChange: false,
-    searching: false,
+    searching: true,
     ordering: true,
     info: true,
     autoWidth: false,
@@ -180,3 +180,30 @@ var updateDepReq = (depData) => {
     });
   });
 };
+
+var addDepReq = (depData) => {
+  var addRequest = $.ajax({
+    url: `http://localhost:8080/api/department`,
+    method: "POST",
+    data: JSON.stringify(depData),
+    contentType: "application/json",
+  });
+
+  addRequest.done((res) => {
+    if (res.status == 200) {
+      // get inserted employee
+      getDepByName(depData);
+    }
+  });
+
+  addRequest.fail(function (jqXHR, textStatus) {
+    swal({
+      title: "Error!",
+      text: textStatus,
+      icon: "error",
+      button: "OK",
+    });
+  });
+};
+
+var getDepByName = (depName) => {};

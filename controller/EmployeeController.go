@@ -8,6 +8,7 @@ import (
 	"main/utils"
 	"net/http"
 	"strconv"
+	"time"
 
 	database "g.ghn.vn/scte-common/godal"
 	"github.com/labstack/echo/v4"
@@ -141,6 +142,8 @@ func UpdateEmployee(c echo.Context) error {
 	jsonData, err := json.Marshal(dataReq)
 	var newData map[string]interface{}
 	err = json.Unmarshal([]byte(jsonData), &newData)
+	currentTime := time.Now()
+	newData["updated_at"] = string(currentTime.Format(time.RFC3339))
 	fmt.Println("new data: ", newData)
 
 	dbType := utils.Global[utils.POSTGRES_ENTITY].(database.Postgres)
