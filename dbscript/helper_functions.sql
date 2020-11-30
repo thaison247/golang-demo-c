@@ -104,3 +104,22 @@ begin
 			employees e left join current_empdep_view cev on e.employee_id = cev.employee_id
 		where e.employee_id = p_employee_id;
 end;$$
+
+
+--- SonNH
+
+SELECT *, 'ACTIVE' AS status
+FROM emp_dep JOIN (
+	SELECT employee_id, MAX(effect_from) AS effect_from
+	FROM emp_dep
+	WHERE effect_from <= NOW()::DATE
+	GROUP BY employee_id
+) B ON emp_dep.employee_id = B.employee_id AND emp_dep.effect_from=B.effect_from
+UNION
+SELECT *, 'INACTIVE' AS status
+FROM emp_dep JOIN (
+	SELECT employee_id, MIN(effect_from) AS effect_from
+	FROM emp_dep
+	GROUP BY employee_id
+	HAVING MIN(effect_from) > NOW()::DATE
+) B ON emp_dep.employee_id = B.employee_id AND emp_dep.effect_from=B.effect_from
