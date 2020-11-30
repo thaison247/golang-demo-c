@@ -30,7 +30,6 @@ func defineRoutes(e *echo.Echo) {
 
 	e.POST("/api/empdep", controller.AddEmployeeToDepartment)
 	e.PATCH("/api/empdep", controller.UpdateEffectFromDate)
-
 }
 
 func Routes(e *echo.Echo) {

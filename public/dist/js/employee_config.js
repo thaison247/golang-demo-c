@@ -7,36 +7,7 @@ $(document).ready(() => {
   request.done(function (msg) {
     var listEmployees = msg.data;
     $.each(listEmployees, function (i, val) {
-      const trElement = `<tr id="employee-${val.employee_id}">
-                            <td id="employeeId">${val.employee_id}</td>
-                            <td id="fullName">
-                                ${val.full_name}
-                            </td>
-                            <td id="phoneNumber">${val.phone_number}</td>
-                            <td id="phoneNumber">${val.email}</td>
-                            <td id="departmentName">${val.department_name}</td>
-                            <td class="operators" style="text-align: center;">
-                                <button id="emp-btn-${val.employee_id}" type="button" class="btn btn-primary detail-btn" data-id="${val.employee_id}">
-                                <i class="far fa-edit"></i> Detail
-                                </button>
-                                <button id="del-emp-btn-${val.employee_id}" type="button" class="btn btn-danger delete-btn" data-id="${val.employee_id}">
-                                <i class="far fa-trash-alt"></i> Delete
-                                </button>
-                            </td>
-                        </tr>`;
-      $("#employees_table tbody").append(trElement);
-
-      var btnIdSelector = `#emp-btn-${val.employee_id}`;
-
-      $(btnIdSelector).click(() => {
-        getEmployeeById(val.employee_id);
-      });
-
-      var btnDelSelector = `#del-emp-btn-${val.employee_id}`;
-
-      $(btnDelSelector).click(() => {
-        deleteEmployee(val.employee_id, val.employee_name);
-      });
+      renderEmployeeRow(val);
     });
 
     $("#employees_table").DataTable({
@@ -260,20 +231,24 @@ function changeDepartment(empdepData) {
       });
 
       getDepReq.done((res) => {
-        var department = res.data[0];
-        if (!department) {
-          $(`#employee-${empdepData.employee_id}`).remove();
-        } else {
-          $(`#employee-${empdepData.employee_id} #departmentName`).text(
-            `${department.department_name}`
-          );
+        var newEmp = res.data[0];
 
-          $("#add-emp-modal").removeClass("show");
-          $("#add-emp-modal").css({ display: "none", background: "none" });
+        $("#add-emp-modal").removeClass("show");
+        $("#add-emp-modal").css({ display: "none", background: "none" });
 
-          $("#emp-modal").removeClass("show");
-          $("#emp-modal").css({ display: "none", background: "none" });
-        }
+        $("#emp-modal").removeClass("show");
+        $("#emp-modal").css({ display: "none", background: "none" });
+
+        renderEmployeeRow(newEmp);
+
+        // var department = res.data[0];
+        // if (!newEmp.department_id) {
+        //   $(`#employee-${empdepData.employee_id} #departmentName`).text("");
+        // } else {
+        //   $(`#employee-${empdepData.employee_id} #departmentName`).text(
+        //     `${department.department_name}`
+        //   );
+        // }
 
         swal({
           title: "Successfully!",
@@ -322,6 +297,7 @@ $("#add-emp-btn").click(() => {
     timepicker: false,
     datepicker: true,
     format: "d-m-yy",
+    value: new Date(),
   });
 });
 
@@ -366,56 +342,6 @@ function getEmpReq(empData) {
   req.done((res) => {
     console.log(res.data);
     const newEmp = res.data[0];
-    const trElement = `<tr id="employee-${newEmp.employee_id}">
-                            <td id="employeeId">${newEmp.employee_id}</td>
-                            <td id="fullName">
-                                ${newEmp.full_name}
-                            </td>
-                            <td id="phoneNumber">${newEmp.phone_number}</td>
-                            <td id="phoneNumber">${newEmp.email}</td>
-                            <td id="departmentName">${newEmp.department_name}</td>
-                            <td style="text-align: center;">
-                              <button id="emp-btn-${newEmp.employee_id}" type="button" class="btn btn-primary detail-btn" data-id="${newEmp.employee_id}">
-                              <i class="far fa-edit"></i> Detail
-                              </button>
-                              <button id="del-emp-btn-${newEmp.employee_id}" type="button" class="btn btn-danger delete-btn" data-id="${newEmp.employee_id}">
-                              <i class="far fa-trash-alt"></i> Delete
-                              </button>
-                            </td>
-                        </tr>`;
-    $("#employees_table tbody").append(trElement);
-
-    var btnIdSelector = `#emp-btn-${newEmp.employee_id}`;
-
-    $(btnIdSelector).click(() => {
-      getEmployeeById(newEmp.employee_id);
-    });
-
-    var btnDelSelector = `#del-emp-btn-${newEmp.employee_id}`;
-
-    $(btnDelSelector).click(() => {
-      swal({
-        dangerMode: true,
-        title: "Are you sure?",
-        text: `Delete '${newEmp.full_name} - ID: ${newEmp.employee_id}'`,
-        icon: "warning",
-        buttons: {
-          cancel: "Cancel",
-          yes: true,
-        },
-      }).then((value) => {
-        switch (value) {
-          case "cancel":
-            swal.close();
-            break;
-
-          case "yes":
-            swal.close();
-            delEmployee(newEmp.employee_id);
-            break;
-        }
-      });
-    });
 
     var empdepData = getFormData($("#add-emp_dep-form").serializeArray());
     empdepData.effect_from =
@@ -435,3 +361,57 @@ function getEmpReq(empData) {
     console.log("Request failed: " + textStatus);
   });
 }
+
+var renderEmployeeRow = (employee) => {
+  var depName = employee.department_name ? employee.department_name : "";
+  const trElement = `<tr id="employee-${employee.employee_id}">
+  <td id="employeeId">${employee.employee_id}</td>
+  <td id="fullName">
+      ${employee.full_name}
+  </td>
+  <td id="phoneNumber">${employee.phone_number}</td>
+  <td id="phoneNumber">${employee.email}</td>
+  <td id="departmentName">${depName}</td>
+  <td style="text-align: center;">
+    <button id="emp-btn-${employee.employee_id}" type="button" class="btn btn-primary detail-btn" data-id="${employee.employee_id}">
+    <i class="far fa-edit"></i> Detail
+    </button>
+    <button id="del-emp-btn-${employee.employee_id}" type="button" class="btn btn-danger delete-btn" data-id="${employee.employee_id}">
+    <i class="far fa-trash-alt"></i> Delete
+    </button>
+  </td>
+</tr>`;
+  $("#employees_table tbody").append(trElement);
+
+  var btnIdSelector = `#emp-btn-${employee.employee_id}`;
+
+  $(btnIdSelector).click(() => {
+    getEmployeeById(employee.employee_id);
+  });
+
+  var btnDelSelector = `#del-emp-btn-${employee.employee_id}`;
+
+  $(btnDelSelector).click(() => {
+    swal({
+      dangerMode: true,
+      title: "Are you sure?",
+      text: `Delete '${employee.full_name} - ID: ${employee.employee_id}'`,
+      icon: "warning",
+      buttons: {
+        cancel: "Cancel",
+        yes: true,
+      },
+    }).then((value) => {
+      switch (value) {
+        case "cancel":
+          swal.close();
+          break;
+
+        case "yes":
+          swal.close();
+          delEmployee(employee.employee_id);
+          break;
+      }
+    });
+  });
+};

@@ -73,3 +73,34 @@ begin
 											   where ed1.employee_id = emp_dep.employee_id
 											  		  and ed1.effect_from <= now()));
 end;$$
+
+
+-- get one employee and current department (left join with 'current_empdep_view')
+create or replace function get_one_employee_with_department_v2 (
+  	p_employee_id int
+) 
+	returns table (
+		employee_id int,
+		full_name text,
+		phone_number text,
+		email text,
+		gender boolean,
+		job_title text,
+		created_at timestamp with time zone,
+		updated_at timestamp with time zone,
+		address text,
+		department_id int,
+		department_code varchar(5),
+		department_name text,
+		effect_from date
+	) 
+	language plpgsql
+as $$
+begin
+	return query 
+		select
+			e.*, cev.department_id, cev.department_code, cev.department_name, cev.effect_from
+		from
+			employees e left join current_empdep_view cev on e.employee_id = cev.employee_id
+		where e.employee_id = p_employee_id;
+end;$$

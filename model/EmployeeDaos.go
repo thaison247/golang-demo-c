@@ -8,9 +8,9 @@ var (
 	EMPLOYEES = "employees"
 )
 
-const SQL_CUSTOM_GET_EMPLOYEE_BY_ID = "" + "SELECT * FROM get_one_employee_with_department($1)"
+const SQL_CUSTOM_GET_EMPLOYEE_BY_ID = "" + "SELECT * FROM get_one_employee_with_department_v2($1)"
 
-const SQL_CUSTOM_GET_EMPLOYEES_WITH_DEPARTMENT = "" + "SELECT * " + "FROM get_employees_with_department($1, $2)"
+const SQL_CUSTOM_GET_EMPLOYEES_WITH_DEPARTMENT = "" + "SELECT * " + "FROM get_employees_with_department_v2($1, $2)"
 
 const SQL_CUSTOM_GET_EMPLOYEE_BY_EMAIL = "" + "SELECT * FROM employees WHERE email = ($1)"
 

@@ -88,6 +88,10 @@ var getDepartmentById = (departmentId) => {
       "DD-MM-YYYY hh:mm:ss"
     );
     $("#dep-form #created_at").val(momentDate);
+    var updatedDate = moment(department.updated_at).format(
+      "DD-MM-YYYY hh:mm:ss"
+    );
+    $("#dep-form #updated_at").val(updatedDate);
   });
 
   request.fail(function (jqXHR, textStatus) {
