@@ -314,7 +314,6 @@ function changeDepartment(empdepData) {
 //ADD EMPLOYEE
 $("#add-emp-btn").click(() => {
   $("#add-emp-modal form").get(0).reset();
-  $("#add-emp-modal form").get(1).reset();
   $("#add-emp-modal").addClass("show");
   $("#add-emp-modal").css({
     display: "block",
@@ -327,15 +326,15 @@ $("#add-emp-btn").click(() => {
   });
 
   getListDepartmentsReq.done((res) => {
-    $("#add-emp_dep-form #input_department_name").empty();
+    $("#add-emp-form #input_department_name").empty();
     var listDepartments = res.data;
     $.each(listDepartments, function (i, dep) {
       var option = `<option value="${dep.department_id}">${dep.department_name}</option>`;
-      $("#add-emp_dep-form #input_department_name").append(option);
+      $("#add-emp-form #input_department_name").append(option);
     });
   });
 
-  $("#add-emp_dep-form #input_effect_from").datetimepicker({
+  $("#add-emp-form #input_effect_from").datetimepicker({
     timepicker: false,
     datepicker: true,
     format: "d-m-yy",
@@ -346,6 +345,14 @@ $("#add-emp-btn").click(() => {
 $("#submit-btn").click(() => {
   var empData = getFormData($("#add-emp-form").serializeArray());
   empData.gender = empData.gender == "Male" ? true : false;
+  empData.effect_from =
+    moment(empData.effect_from, "DD-MM-YYYY").format("YYYY-MM-DD") +
+    "T00:00:00Z";
+  empData.employee_id = Number(empData.employee_id);
+  empData.department_id = Number(empData.department_id);
+  empData.department_name = $(
+    "#add-emp-form #input_department_name option:selected"
+  ).text();
 
   addEmpReq(empData);
 });
@@ -361,7 +368,32 @@ function addEmpReq(empData) {
   addEmpReq.done((res) => {
     if (res.status == 200) {
       // get inserted employee
-      getEmpReq(empData);
+      let getInsertedEmp = $.ajax({
+        url: `http://localhost:8080/api/employee/email?email=${empData.email}`,
+        method: "GET",
+      });
+
+      getInsertedEmp.done((res) => {
+        var resData = res.data[0];
+        resData.department_name = empData.department_name;
+        $("#add-emp-modal").removeClass("show");
+        $("#add-emp-modal").css({ display: "none", background: "none" });
+        swal({
+          title: "Added employee successfully!",
+          icon: "success",
+          button: "OK",
+        });
+        renderEmployeeRow(resData);
+      });
+
+      getInsertedEmp.fail((jqXHR, textStatus) => {
+        swal({
+          title: "Error!",
+          text: textStatus,
+          icon: "error",
+          button: "Close",
+        });
+      });
     }
   });
 

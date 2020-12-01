@@ -62,6 +62,34 @@ func CreateEmployeeV2(c echo.Context) error {
 	return ApiResult(c, http.StatusOK, res)
 }
 
+func CreateEmployeeV3(c echo.Context) error {
+	var err error
+
+	var dataReq map[string]interface{}
+	if err = c.Bind(&dataReq); err != nil {
+		fmt.Println(err)
+		return ApiResult(c, http.StatusBadRequest, err)
+	}
+
+	fmt.Println("dtr: ", dataReq)
+
+	// jsonData, err := json.Marshal(dataReq)
+	// var newData map[string]interface{}
+	// err = json.Unmarshal([]byte(jsonData), &newData)
+
+	delete(dataReq, "employee_id")
+	fmt.Println("dtrd: ", dataReq)
+
+	dbType := utils.Global[utils.POSTGRES_ENTITY].(database.Postgres)
+	res, err := model.AddEmployee(dbType, dataReq)
+
+	if err != nil {
+		return ApiResult(c, http.StatusBadRequest, err)
+	}
+
+	return ApiResult(c, http.StatusOK, res)
+}
+
 func GetAllEmployees(c echo.Context) error {
 	var limit int
 	var offset int
