@@ -105,6 +105,65 @@ begin
 		where e.employee_id = p_employee_id;
 end;$$
 
+--
+create or replace function get_employees_with_department_v3 (
+  	p_limit int,
+	p_offset int
+) 
+	returns table (
+		employee_id int,
+		full_name text,
+		phone_number text,
+		email text,
+		gender boolean,
+		address text,
+		job_title text,
+		created_at timestamp with time zone,
+		updated_at timestamp with time zone,
+		department_id int,
+		department_code varchar(5),
+		department_name text
+	) 
+	language plpgsql
+as $$
+begin
+	return query 
+		SELECT E.*, D.department_id, D.department_code, D.department_name
+		FROM (employees E JOIN employee_department_view ED ON E.employee_id = ED.employee_id)
+			 JOIN departments D ON ED.department_id = D.department_id
+		LIMIT p_limit OFFSET p_offset;
+end;$$
+
+
+-- get one employee and current department Version 3
+create or replace function get_one_employee_with_department_v3 (
+  	p_employee_id int
+) 
+	returns table (
+		employee_id int,
+		full_name text,
+		phone_number text,
+		email text,
+		gender boolean,
+		address text,
+		job_title text,
+		created_at timestamp with time zone,
+		updated_at timestamp with time zone,
+		department_id int,
+		department_code varchar(5),
+		department_name text,
+		effect_from date
+	) 
+	language plpgsql
+as $$
+begin
+	return query 
+		SELECT E.*, D.department_id, D.department_code, D.department_name, ED.effect_from
+		FROM (employees E JOIN employee_department_view ED ON E.employee_id = ED.employee_id)
+			 JOIN departments D ON ED.department_id = D.department_id
+		WHERE E.employee_id = p_employee_id;
+end;$$
+
 
 --- SonNH
 

@@ -7,6 +7,7 @@ import (
 	"main/structs"
 	"main/utils"
 	"net/http"
+	"strconv"
 
 	database "g.ghn.vn/scte-common/godal"
 	"github.com/labstack/echo/v4"
@@ -32,6 +33,26 @@ func AddEmployeeToDepartment(c echo.Context) error {
 	err = json.Unmarshal([]byte(jsonData), &newData)
 	fmt.Println(newData)
 	dbType := utils.Global[utils.POSTGRES_ENTITY].(database.Postgres)
+
+	// // get latest effect day
+	// result, err := model.GetLatestEffectDay(dbType, int(newData["employee_id"].(float64)))
+	// fmt.Printf("res: %+v", result)
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	return ApiResult(c, http.StatusBadRequest, err)
+	// }
+
+	// // t := time.Now()
+
+	// latestDay := result.(map[string]interface{})["effect_from"].(time.Time)
+	// inputDay := newData["effect_from"].(time.Time)
+
+	// diff := latestDay.Sub(inputDay)
+
+	// if diff > 0 {
+	// 	fmt.Println(diff)
+	// 	return ApiResult(c, http.StatusBadRequest, "invalid effect day")
+	// }
 
 	delete(newData, "id")
 	_, err = model.AddEmployeeToDeparmentWithMap(dbType, newData)
@@ -65,4 +86,22 @@ func UpdateEffectFromDate(c echo.Context) error {
 	}
 
 	return ApiResult(c, http.StatusOK, "success")
+}
+
+func GetLatestEffectDayByEmpId(c echo.Context) error {
+	var employeeId int
+	var err error
+
+	if employeeId, err = strconv.Atoi(c.QueryParam("employeeid")); err != nil {
+		return ApiResult(c, http.StatusBadRequest, err)
+	}
+
+	dbType := utils.Global[utils.POSTGRES_ENTITY].(database.Postgres)
+	rs, err := model.GetLatestEffectDay(dbType, employeeId)
+
+	if err != nil {
+		return ApiResult(c, http.StatusBadRequest, err)
+	}
+
+	return ApiResult(c, http.StatusOK, rs)
 }

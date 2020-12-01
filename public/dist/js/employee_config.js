@@ -44,7 +44,6 @@ var getEmployeeById = (employeeId) => {
     $("#emp-modal").css({ display: "block", background: "rgba(0, 0, 0, 0.4)" });
 
     $("#emp-form #employee_id").val(employee.employee_id);
-    $("#emp_dep-form #employee_id").val(employee.employee_id);
     $("#emp-form #full_name").val(employee.full_name);
     const gender = employee.gender ? "Male" : "Female";
     $("#emp-form #gender").val(gender);
@@ -52,7 +51,10 @@ var getEmployeeById = (employeeId) => {
     $("#emp-form #phone_number").val(employee.phone_number);
     $("#emp-form #address").val(employee.address);
     $("#emp-form #job_title").val(employee.job_title);
-    // $("#emp_dep-form #department_name").val(employee.department_name);
+
+    $("#emp_dep-form #employee_id").val(employee.employee_id);
+    $("#emp_dep-form-origin #employee_id-origin").val(employee.employee_id);
+
     var momentDate = moment(employee.effect_from).format("DD-MM-YYYY");
     $("#emp_dep-form #effect_from").datetimepicker({
       timepicker: false,
@@ -60,11 +62,13 @@ var getEmployeeById = (employeeId) => {
       format: "d-m-yy",
       value: momentDate,
     });
+    $("#emp_dep-form-origin #effect_from-origin").val(momentDate);
 
     getListDepartmentsReq.done((res) => {
       const listDepartments = res.data;
 
       $("#emp_dep-form #department_name").empty();
+      $("#emp_dep-form-origin #department_name-origin").empty();
 
       $.each(listDepartments, function (i, dep) {
         var option =
@@ -72,6 +76,7 @@ var getEmployeeById = (employeeId) => {
             ? `<option selected value="${dep.department_id}">${dep.department_name}</option>`
             : `<option value="${dep.department_id}">${dep.department_name}</option>`;
         $("#emp_dep-form #department_name").append(option);
+        $("#emp_dep-form-origin #department_name-origin").append(option);
       });
     });
 
@@ -182,14 +187,13 @@ function updateEmpReq(empData) {
 
   updateEmpReq.done((res) => {
     if (res.status == 200) {
-      console.log(empData);
       $(`#employee-${empData.employee_id} #fullName`).text(
         `${empData.full_name}`
       );
-      // $(`#employee-${empData.employee_id} #departmentName`).inner(`${empData.departmentName}`)
       $(`#employee-${empData.employee_id} #phoneNumber`).text(
         `${empData.phone_number}`
       );
+      $(`#employee-${empData.employee_id} #email`).text(`${empData.email}`);
 
       var empdepData = getFormData($("#emp_dep-form").serializeArray());
       empdepData.effect_from =
@@ -201,7 +205,35 @@ function updateEmpReq(empData) {
         "#emp_dep-form #department_name option:selected"
       ).text();
 
-      changeDepartment(empdepData);
+      var originData = getFormData($("#emp_dep-form-origin").serializeArray());
+      originData.effect_from =
+        moment(originData.effect_from, "DD-MM-YYYY").format("YYYY-MM-DD") +
+        "T00:00:00Z";
+      originData.employee_id = Number(originData.employee_id);
+      originData.department_id = Number(originData.department_id);
+      originData.department_name = $(
+        "#emp_dep-form-origin #department_name-origin option:selected"
+      ).text();
+
+      if (
+        Object.entries(empdepData).toString() ===
+        Object.entries(originData).toString()
+      ) {
+        $("#add-emp-modal").removeClass("show");
+        $("#add-emp-modal").css({ display: "none", background: "none" });
+
+        $("#emp-modal").removeClass("show");
+        $("#emp-modal").css({ display: "none", background: "none" });
+
+        // renderEmployeeRow(newEmp);
+        swal({
+          title: "Update employee successfully!",
+          icon: "success",
+          button: "OK",
+        });
+      } else {
+        changeDepartment(empdepData);
+      }
     }
   });
 
@@ -216,56 +248,66 @@ function updateEmpReq(empData) {
 }
 
 function changeDepartment(empdepData) {
-  var changeDepReq = $.ajax({
-    url: `http://localhost:8080/api/empdep`,
-    method: "POST",
-    data: JSON.stringify(empdepData),
-    contentType: "application/json",
-  });
+  var inputEffectFrom = new Date(empdepData.effect_from);
 
-  changeDepReq.done((res) => {
-    if (res.status == 200) {
-      var getDepReq = $.ajax({
-        url: `http://localhost:8080/api/employee?employeeid=${empdepData.employee_id}`,
-        method: "GET",
+  $.ajax({
+    url: `http://localhost:8080/api/empdep?employeeid=${empdepData.employee_id}`,
+    method: "GET",
+  }).done((res) => {
+    var latestDayStr = new Date(res.data[0].effect_from);
+    var latestDay = new Date(latestDayStr);
+
+    if (inputEffectFrom <= latestDay) {
+      swal({
+        title: "Error",
+        text: "Invalid effect_from day",
+        icon: "error",
+        button: "Close",
+      });
+    } else {
+      var changeDepReq = $.ajax({
+        url: `http://localhost:8080/api/empdep`,
+        method: "POST",
+        data: JSON.stringify(empdepData),
+        contentType: "application/json",
       });
 
-      getDepReq.done((res) => {
-        var newEmp = res.data[0];
+      changeDepReq.done((res) => {
+        if (res.status == 200) {
+          var getDepReq = $.ajax({
+            url: `http://localhost:8080/api/employee?employeeid=${empdepData.employee_id}`,
+            method: "GET",
+          });
 
-        $("#add-emp-modal").removeClass("show");
-        $("#add-emp-modal").css({ display: "none", background: "none" });
+          getDepReq.done((res) => {
+            var newEmp = res.data[0];
 
-        $("#emp-modal").removeClass("show");
-        $("#emp-modal").css({ display: "none", background: "none" });
+            $("#add-emp-modal").removeClass("show");
+            $("#add-emp-modal").css({ display: "none", background: "none" });
 
-        renderEmployeeRow(newEmp);
+            $("#emp-modal").removeClass("show");
+            $("#emp-modal").css({ display: "none", background: "none" });
 
-        // var department = res.data[0];
-        // if (!newEmp.department_id) {
-        //   $(`#employee-${empdepData.employee_id} #departmentName`).text("");
-        // } else {
-        //   $(`#employee-${empdepData.employee_id} #departmentName`).text(
-        //     `${department.department_name}`
-        //   );
-        // }
+            renderEmployeeRow(newEmp);
 
+            swal({
+              title: "Successfully!",
+              icon: "success",
+              button: "OK",
+            });
+          });
+        }
+      });
+
+      changeDepReq.fail(function (jqXHR, textStatus) {
         swal({
-          title: "Successfully!",
-          icon: "success",
-          button: "OK",
+          title: "Error",
+          text: textStatus,
+          icon: "error",
+          button: "Close",
         });
       });
     }
-  });
-
-  changeDepReq.fail(function (jqXHR, textStatus) {
-    swal({
-      title: "Error",
-      text: textStatus,
-      icon: "error",
-      button: "Close",
-    });
   });
 }
 
@@ -370,7 +412,7 @@ var renderEmployeeRow = (employee) => {
       ${employee.full_name}
   </td>
   <td id="phoneNumber">${employee.phone_number}</td>
-  <td id="phoneNumber">${employee.email}</td>
+  <td id="email">${employee.email}</td>
   <td id="departmentName">${depName}</td>
   <td style="text-align: center;">
     <button id="emp-btn-${employee.employee_id}" type="button" class="btn btn-primary detail-btn" data-id="${employee.employee_id}">
@@ -381,6 +423,7 @@ var renderEmployeeRow = (employee) => {
     </button>
   </td>
 </tr>`;
+  $(`#employee-${employee.employee_id}`).remove();
   $("#employees_table tbody").append(trElement);
 
   var btnIdSelector = `#emp-btn-${employee.employee_id}`;

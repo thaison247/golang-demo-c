@@ -13,3 +13,24 @@ where
 									   from emp_dep ed1
 									   where ed1.employee_id = emp_dep.employee_id
 											  and ed1.effect_from <= now()));
+
+
+
+----
+CREATE VIEW employee_department_view
+AS
+(SELECT emp_dep.*, 'ACTIVE' AS status
+FROM emp_dep JOIN (
+	SELECT employee_id, MAX(effect_from) AS effect_from
+	FROM emp_dep
+	WHERE effect_from <= NOW()::DATE
+	GROUP BY employee_id
+) B ON emp_dep.employee_id = B.employee_id AND emp_dep.effect_from=B.effect_from
+UNION
+SELECT emp_dep.*, 'INACTIVE' AS status
+FROM emp_dep JOIN (
+	SELECT employee_id, MIN(effect_from) AS effect_from
+	FROM emp_dep
+	GROUP BY employee_id
+	HAVING MIN(effect_from) > NOW()::DATE
+) B ON emp_dep.employee_id = B.employee_id AND emp_dep.effect_from=B.effect_from)

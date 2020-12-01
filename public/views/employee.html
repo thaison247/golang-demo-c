@@ -107,6 +107,26 @@ Management | {{index . "page-title"}}
                                         </div>
                                     </div>
                                 </form>
+                                <form id="emp_dep-form-origin" style="display: none;">
+                                    <div class="form-group">
+                                        <input name="employee_id" type="hidden" class="form-control"
+                                            id="employee_id-origin">
+                                    </div>
+                                    <div class="department-info">
+                                        <div class="form-group">
+                                            <label for="department_name">Department</label>
+                                            <!-- <input type="text" class="form-control" id="department_name"> -->
+                                            <select name="department_id" type="hidden" class="custom-select"
+                                                id="department_name-origin" required>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="effect_from">Effect from</label>
+                                            <input name="effect_from" type="hidden" type="text" class="form-control"
+                                                id="effect_from-origin" required>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                             <div class="modal-footer">
                                 <button id="close-btn" type="button" class="btn btn-secondary"

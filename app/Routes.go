@@ -28,6 +28,7 @@ func defineRoutes(e *echo.Echo) {
 	e.PATCH("/api/department", controller.UpdateDepartment)
 	e.DELETE("/api/department", controller.DeleteDepartment)
 
+	e.GET("/api/empdep", controller.GetLatestEffectDayByEmpId)
 	e.POST("/api/empdep", controller.AddEmployeeToDepartment)
 	e.PATCH("/api/empdep", controller.UpdateEffectFromDate)
 }
