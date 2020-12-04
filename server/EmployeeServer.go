@@ -60,3 +60,25 @@ func (e *EmployeeServer) GetListEmployees(req *employeepb.ListEmployeesRequest,
 
 	return nil
 }
+
+func (e *EmployeeServer) CreateEmployee(ctx context.Context, req *employeepb.EmployeeRequest) (*employeepb.CreateEmployeeResponse, error) {
+	employee := make(map[string]interface{})
+	jsonString, _ := json.Marshal(req)
+	json.Unmarshal(jsonString, &employee)
+
+	delete(employee, "employee_id")
+	log.Println(employee)
+
+	dbType := utils.Global[utils.POSTGRES_ENTITY].(database.Postgres)
+	_, err := model.CreateWithMap(dbType, employee)
+
+	if err != nil {
+		log.Fatalf("error when create employee: %v\n", err)
+		resp := &employeepb.CreateEmployeeResponse{StatusMsg: "Fail"}
+		return resp, err
+	}
+
+	resp := &employeepb.CreateEmployeeResponse{StatusCode: "200", StatusMsg: "Success"}
+
+	return resp, nil
+}
