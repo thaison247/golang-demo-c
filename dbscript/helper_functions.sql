@@ -129,7 +129,7 @@ as $$
 begin
 	return query 
 		SELECT E.*, D.department_id, D.department_code, D.department_name
-		FROM (employees E JOIN employee_department_view ED ON E.employee_id = ED.employee_id)
+		FROM (employees E LEFT JOIN employee_department_view ED ON E.employee_id = ED.employee_id)
 			 JOIN departments D ON ED.department_id = D.department_id
 		LIMIT p_limit OFFSET p_offset;
 end;$$

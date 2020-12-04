@@ -12,10 +12,13 @@ import (
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 
+	"main/server"
 	"main/utils"
 
 	database "g.ghn.vn/scte-common/godal"
 
+	"main/apis/employeepb"
+	
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/labstack/echo/v4"
 )
@@ -27,23 +30,7 @@ var (
 
 type TemplateRegistry struct {
 	templates map[string]*template.Template
-	// debug    bool
-	// location string
 }
-
-// func NewRenderer(location string, debug bool) *Renderer {
-// 	tp1 := new(Renderer)
-// 	// tp1.location = location
-// 	// tp1.debug = debug
-
-// 	// tp1.ReloadTemplates()
-
-// 	return tp1
-// }
-
-// func (r *Renderer) ReloadTemplates() {
-// 	r.template = template.Must(template.ParseGlob(r.location))
-// }
 
 func (r *TemplateRegistry) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
 	tmpl, ok := r.templates[name]
@@ -131,7 +118,8 @@ func startGrpcServer() {
 	var opts []grpc.ServerOption
 	grpcServer := grpc.NewServer(opts...)
 	// users.RegisterUsersServer(grpcServer, &usersServer)
-	//pb.RegisterPApiServiceServer(grpcServer, newGrpcGateway())
+	// pb.RegisterPApiServiceServer(grpcServer, newGrpcGateway())
+	employeepb.RegisterEmployeeServiceServer(grpcServer, &server.EmployeeServer{})
 	log.Infof("Start gRPC server at port: %s", grpcPort)
 	go grpcServer.Serve(lis)
 }
