@@ -12,6 +12,8 @@ const SQL_CUSTOM_GET_EMPLOYEE_BY_ID = "" + "SELECT * FROM get_one_employee_with_
 
 const SQL_CUSTOM_GET_EMPLOYEES_WITH_DEPARTMENT = "" + "SELECT * " + "FROM get_employees_with_department_v3($1, $2)"
 
+const SQL_CUSTOM_GET_EMPLOYEES = "SELECT * FROM employees LIMIT $1 OFFSET $2"
+
 const SQL_CUSTOM_GET_EMPLOYEE_BY_EMAIL = "" + "SELECT * FROM employees WHERE email = ($1)"
 
 const SQL_CUSTOM_ADD_EMPLOYEE = "CALL add_employee($1::text, $2::text, $3::text, $4, $5::text, $6::text, $7, $8::date)"
@@ -21,9 +23,19 @@ func GetEmployeeById(dbType database.IDatabase, id int) (interface{}, error) {
 	return dbType.ExecuteSelectToMap(SQL_CUSTOM_GET_EMPLOYEE_BY_ID, params)
 }
 
+func GetEmployeeByIdV2(dbType database.IDatabase, id int) ([]map[string]interface{}, error) {
+	params := []interface{}{id}
+	return dbType.ExecuteSelectToMap(SQL_CUSTOM_GET_EMPLOYEE_BY_ID, params)
+}
+
 func GetEmployeesWithDepartment(dbType database.IDatabase, limit int, offset int) ([]map[string]interface{}, error) {
 	params := []interface{}{limit, offset}
 	return dbType.ExecuteSelectToMap(SQL_CUSTOM_GET_EMPLOYEES_WITH_DEPARTMENT, params)
+}
+
+func GetEmployees(dbType database.IDatabase, limit int, offset int) ([]map[string]interface{}, error) {
+	params := []interface{}{limit, offset}
+	return dbType.ExecuteSelectToMap(SQL_CUSTOM_GET_EMPLOYEES, params)
 }
 
 func CreateWithMap(dbType database.IDatabase, mapData map[string]interface{}) (interface{}, error) {

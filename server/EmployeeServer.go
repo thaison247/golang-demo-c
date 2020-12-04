@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"encoding/json"
 	"log"
 	"main/apis/employeepb"
 	"main/model"
@@ -15,14 +16,47 @@ type EmployeeServer struct{}
 func (e *EmployeeServer) GetEmployee(ctx context.Context, req *employeepb.EmployeeRequest) (*employeepb.EmployeeResponse, error) {
 	log.Println("Get employee service")
 	dbType := utils.Global[utils.POSTGRES_ENTITY].(database.Postgres)
-	_, err := model.GetEmployeeById(dbType, int(req.GetEmployeeId()))
+
+	rs, err := model.GetEmployeeByIdV2(dbType, int(req.GetEmployeeId()))
 	if err != nil {
 		return nil, err
 	}
 
-	emp := &employeepb.EmployeeResponse{
-		FullName: "full name",
-	}
+	row := rs[0]
+
+	//convert map[string]interface{} to json
+	jsonString, _ := json.Marshal(row)
+
+	//convert json to struct
+	emp := &employeepb.EmployeeResponse{}
+	json.Unmarshal(jsonString, emp)
 
 	return emp, nil
+}
+
+func (e *EmployeeServer) GetListEmployees(req *employeepb.ListEmployeesRequest,
+	stream employeepb.EmployeeService_GetListEmployeesServer) error {
+	limit := req.GetLimit()
+	offset := req.GetOffset()
+
+	dbtype := utils.Global[utils.POSTGRES_ENTITY].(database.Postgres)
+	rs, err := model.GetEmployees(dbtype, int(limit), int(offset))
+
+	if err != nil {
+		return err
+	}
+
+	for _, val := range rs {
+		//convert map[string]interface{} to json
+		jsonString, _ := json.Marshal(val)
+		//convert json to struct
+		emp := &employeepb.EmployeeResponse{}
+		json.Unmarshal(jsonString, emp)
+
+		if err := stream.Send(emp); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

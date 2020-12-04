@@ -9,9 +9,21 @@ message EmployeeRequest{
 }
 
 message EmployeeResponse{
-    string full_name = 1;
+    uint32 employee_id = 1;
+    string full_name = 2;
+    string email = 3;
+    string phone_number = 4;
+    string address = 5;
+    string gender = 6;
+    string job_title = 7;
+}
+
+message ListEmployeesRequest{
+    uint32 limit = 1;
+    uint32 offset = 2;
 }
 
 service EmployeeService{
     rpc GetEmployee(EmployeeRequest) returns (EmployeeResponse) {}
+    rpc GetListEmployees(ListEmployeesRequest) returns (stream EmployeeResponse){}
 }

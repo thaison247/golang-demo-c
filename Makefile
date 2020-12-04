@@ -1,2 +1,2 @@
 gen:
-	protoc API/proto/*.proto --go_out=plugins=grpc:API/pb
+	protoc apis/employeepb/*.proto --go_out=plugins=grpc:.
