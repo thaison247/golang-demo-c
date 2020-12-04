@@ -13,7 +13,10 @@ import (
 
 type EmployeeServer struct{}
 
-func (e *EmployeeServer) GetEmployee(ctx context.Context, req *employeepb.EmployeeRequest) (*employeepb.EmployeeResponse, error) {
+func (e *EmployeeServer) GetEmployee(ctx context.Context, req *employeepb.EmployeeRequest) (
+	*employeepb.EmployeeResponse,
+	error,
+) {
 	log.Println("Get employee service")
 	dbType := utils.Global[utils.POSTGRES_ENTITY].(database.Postgres)
 
@@ -67,7 +70,6 @@ func (e *EmployeeServer) CreateEmployee(ctx context.Context, req *employeepb.Emp
 	json.Unmarshal(jsonString, &employee)
 
 	delete(employee, "employee_id")
-	log.Println(employee)
 
 	dbType := utils.Global[utils.POSTGRES_ENTITY].(database.Postgres)
 	_, err := model.CreateWithMap(dbType, employee)
@@ -78,7 +80,33 @@ func (e *EmployeeServer) CreateEmployee(ctx context.Context, req *employeepb.Emp
 		return resp, err
 	}
 
-	resp := &employeepb.CreateEmployeeResponse{StatusCode: "200", StatusMsg: "Success"}
+	resp := &employeepb.CreateEmployeeResponse{StatusCode: 200, StatusMsg: "Success"}
+
+	return resp, nil
+}
+
+func (e *EmployeeServer) DeleteEmployee(ctx context.Context, req *employeepb.EmployeeRequest) (*employeepb.DeleteEmployeeResponse, error) {
+	employee := make(map[string]interface{})
+	jsonString, _ := json.Marshal(req)
+	json.Unmarshal(jsonString, &employee)
+
+	log.Println(employee)
+
+	dbType := utils.Global[utils.POSTGRES_ENTITY].(database.Postgres)
+	_, err := model.Delete(dbType, "employees", employee)
+
+	if err != nil {
+		log.Fatalf("Error when delete employee: %v\n", err)
+		resp := &employeepb.DeleteEmployeeResponse{
+			StatusMsg: "Fail",
+		}
+		return resp, err
+	}
+
+	resp := &employeepb.DeleteEmployeeResponse{
+		StatusCode: 200,
+		StatusMsg:  "Success",
+	}
 
 	return resp, nil
 }

@@ -30,7 +30,12 @@ message ListEmployeesRequest{
 }
 
 message CreateEmployeeResponse{
-    string status_code = 1;
+    uint32 status_code = 1;
+    string status_msg = 2;
+}
+
+message DeleteEmployeeResponse{
+    uint32 status_code = 1;
     string status_msg = 2;
 }
 
@@ -38,4 +43,5 @@ service EmployeeService{
     rpc GetEmployee(EmployeeRequest) returns (EmployeeResponse) {}
     rpc GetListEmployees(ListEmployeesRequest) returns (stream EmployeeResponse){}
     rpc CreateEmployee(EmployeeRequest) returns (CreateEmployeeResponse){}
+    rpc DeleteEmployee(EmployeeRequest) returns (DeleteEmployeeResponse){}
 }

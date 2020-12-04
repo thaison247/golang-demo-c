@@ -20,8 +20,8 @@ func main() {
 
 	client := employeepb.NewEmployeeServiceClient(cc)
 
-	callGetEmployee(client, 109)
-	callGetListEmployees(client, 15, 0)
+	//callGetEmployee(client, 109)
+	//callGetListEmployees(client, 15, 0)
 
 	newEmp := &employeepb.EmployeeRequest{
 		FullName:    "Nguyễn Viết Thanh",
@@ -32,7 +32,7 @@ func main() {
 		JobTitle:    "designer",
 	}
 
-	callCreateEmployee(client, newEmp)
+	callDeleteEmployee(client, newEmp)
 
 }
 
@@ -74,6 +74,16 @@ func callCreateEmployee(c employeepb.EmployeeServiceClient, emp *employeepb.Empl
 
 	if err != nil {
 		log.Fatalf("Error when client call create employee api: %v\n", err)
+	}
+
+	log.Printf("Return status: %v\n", res)
+}
+
+func callDeleteEmployee(c employeepb.EmployeeServiceClient, emp *employeepb.EmployeeRequest) {
+	res, err := c.DeleteEmployee(context.Background(), emp)
+
+	if err != nil {
+		log.Fatalf("Error when client call delete employee api: %v\n", err)
 	}
 
 	log.Printf("Return status: %v\n", res)
