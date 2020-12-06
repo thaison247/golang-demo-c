@@ -432,7 +432,7 @@ var file_apis_employeepb_employee_proto_rawDesc = []byte{
 	0x74, 0x75, 0x73, 0x5f, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x0a,
 	0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x43, 0x6f, 0x64, 0x65, 0x12, 0x1d, 0x0a, 0x0a, 0x73, 0x74,
 	0x61, 0x74, 0x75, 0x73, 0x5f, 0x6d, 0x73, 0x67, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09,
-	0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x4d, 0x73, 0x67, 0x32, 0xcf, 0x02, 0x0a, 0x0f, 0x45, 0x6d,
+	0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x4d, 0x73, 0x67, 0x32, 0x9a, 0x03, 0x0a, 0x0f, 0x45, 0x6d,
 	0x70, 0x6c, 0x6f, 0x79, 0x65, 0x65, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x46, 0x0a,
 	0x0b, 0x47, 0x65, 0x74, 0x45, 0x6d, 0x70, 0x6c, 0x6f, 0x79, 0x65, 0x65, 0x12, 0x19, 0x2e, 0x65,
 	0x6d, 0x70, 0x6c, 0x6f, 0x79, 0x65, 0x65, 0x2e, 0x45, 0x6d, 0x70, 0x6c, 0x6f, 0x79, 0x65, 0x65,
@@ -453,9 +453,13 @@ var file_apis_employeepb_employee_proto_rawDesc = []byte{
 	0x6d, 0x70, 0x6c, 0x6f, 0x79, 0x65, 0x65, 0x2e, 0x45, 0x6d, 0x70, 0x6c, 0x6f, 0x79, 0x65, 0x65,
 	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x20, 0x2e, 0x65, 0x6d, 0x70, 0x6c, 0x6f, 0x79,
 	0x65, 0x65, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x45, 0x6d, 0x70, 0x6c, 0x6f, 0x79, 0x65,
-	0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x42, 0x0c, 0x5a, 0x0a, 0x65,
-	0x6d, 0x70, 0x6c, 0x6f, 0x79, 0x65, 0x65, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x33,
+	0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x49, 0x0a, 0x0e, 0x55,
+	0x70, 0x64, 0x61, 0x74, 0x65, 0x45, 0x6d, 0x70, 0x6c, 0x6f, 0x79, 0x65, 0x65, 0x12, 0x19, 0x2e,
+	0x65, 0x6d, 0x70, 0x6c, 0x6f, 0x79, 0x65, 0x65, 0x2e, 0x45, 0x6d, 0x70, 0x6c, 0x6f, 0x79, 0x65,
+	0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1a, 0x2e, 0x65, 0x6d, 0x70, 0x6c, 0x6f,
+	0x79, 0x65, 0x65, 0x2e, 0x45, 0x6d, 0x70, 0x6c, 0x6f, 0x79, 0x65, 0x65, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x42, 0x0c, 0x5a, 0x0a, 0x65, 0x6d, 0x70, 0x6c, 0x6f, 0x79,
+	0x65, 0x65, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -483,12 +487,14 @@ var file_apis_employeepb_employee_proto_depIdxs = []int32{
 	2, // 1: employee.EmployeeService.GetListEmployees:input_type -> employee.ListEmployeesRequest
 	0, // 2: employee.EmployeeService.CreateEmployee:input_type -> employee.EmployeeRequest
 	0, // 3: employee.EmployeeService.DeleteEmployee:input_type -> employee.EmployeeRequest
-	1, // 4: employee.EmployeeService.GetEmployee:output_type -> employee.EmployeeResponse
-	1, // 5: employee.EmployeeService.GetListEmployees:output_type -> employee.EmployeeResponse
-	3, // 6: employee.EmployeeService.CreateEmployee:output_type -> employee.CreateEmployeeResponse
-	4, // 7: employee.EmployeeService.DeleteEmployee:output_type -> employee.DeleteEmployeeResponse
-	4, // [4:8] is the sub-list for method output_type
-	0, // [0:4] is the sub-list for method input_type
+	0, // 4: employee.EmployeeService.UpdateEmployee:input_type -> employee.EmployeeRequest
+	1, // 5: employee.EmployeeService.GetEmployee:output_type -> employee.EmployeeResponse
+	1, // 6: employee.EmployeeService.GetListEmployees:output_type -> employee.EmployeeResponse
+	3, // 7: employee.EmployeeService.CreateEmployee:output_type -> employee.CreateEmployeeResponse
+	4, // 8: employee.EmployeeService.DeleteEmployee:output_type -> employee.DeleteEmployeeResponse
+	1, // 9: employee.EmployeeService.UpdateEmployee:output_type -> employee.EmployeeResponse
+	5, // [5:10] is the sub-list for method output_type
+	0, // [0:5] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -597,6 +603,7 @@ type EmployeeServiceClient interface {
 	GetListEmployees(ctx context.Context, in *ListEmployeesRequest, opts ...grpc.CallOption) (EmployeeService_GetListEmployeesClient, error)
 	CreateEmployee(ctx context.Context, in *EmployeeRequest, opts ...grpc.CallOption) (*CreateEmployeeResponse, error)
 	DeleteEmployee(ctx context.Context, in *EmployeeRequest, opts ...grpc.CallOption) (*DeleteEmployeeResponse, error)
+	UpdateEmployee(ctx context.Context, in *EmployeeRequest, opts ...grpc.CallOption) (*EmployeeResponse, error)
 }
 
 type employeeServiceClient struct {
@@ -666,12 +673,22 @@ func (c *employeeServiceClient) DeleteEmployee(ctx context.Context, in *Employee
 	return out, nil
 }
 
+func (c *employeeServiceClient) UpdateEmployee(ctx context.Context, in *EmployeeRequest, opts ...grpc.CallOption) (*EmployeeResponse, error) {
+	out := new(EmployeeResponse)
+	err := c.cc.Invoke(ctx, "/employee.EmployeeService/UpdateEmployee", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // EmployeeServiceServer is the server API for EmployeeService service.
 type EmployeeServiceServer interface {
 	GetEmployee(context.Context, *EmployeeRequest) (*EmployeeResponse, error)
 	GetListEmployees(*ListEmployeesRequest, EmployeeService_GetListEmployeesServer) error
 	CreateEmployee(context.Context, *EmployeeRequest) (*CreateEmployeeResponse, error)
 	DeleteEmployee(context.Context, *EmployeeRequest) (*DeleteEmployeeResponse, error)
+	UpdateEmployee(context.Context, *EmployeeRequest) (*EmployeeResponse, error)
 }
 
 // UnimplementedEmployeeServiceServer can be embedded to have forward compatible implementations.
@@ -689,6 +706,9 @@ func (*UnimplementedEmployeeServiceServer) CreateEmployee(context.Context, *Empl
 }
 func (*UnimplementedEmployeeServiceServer) DeleteEmployee(context.Context, *EmployeeRequest) (*DeleteEmployeeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteEmployee not implemented")
+}
+func (*UnimplementedEmployeeServiceServer) UpdateEmployee(context.Context, *EmployeeRequest) (*EmployeeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateEmployee not implemented")
 }
 
 func RegisterEmployeeServiceServer(s *grpc.Server, srv EmployeeServiceServer) {
@@ -770,6 +790,24 @@ func _EmployeeService_DeleteEmployee_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _EmployeeService_UpdateEmployee_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EmployeeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(EmployeeServiceServer).UpdateEmployee(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/employee.EmployeeService/UpdateEmployee",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(EmployeeServiceServer).UpdateEmployee(ctx, req.(*EmployeeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _EmployeeService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "employee.EmployeeService",
 	HandlerType: (*EmployeeServiceServer)(nil),
@@ -785,6 +823,10 @@ var _EmployeeService_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteEmployee",
 			Handler:    _EmployeeService_DeleteEmployee_Handler,
+		},
+		{
+			MethodName: "UpdateEmployee",
+			Handler:    _EmployeeService_UpdateEmployee_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

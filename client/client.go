@@ -21,18 +21,19 @@ func main() {
 	client := employeepb.NewEmployeeServiceClient(cc)
 
 	//callGetEmployee(client, 109)
-	//callGetListEmployees(client, 15, 0)
+	// callGetListEmployees(client, 15, 0)
 
 	newEmp := &employeepb.EmployeeRequest{
-		FullName:    "Nguyễn Viết Thanh",
-		Email:       "vietthanh1010@gmail.com",
-		PhoneNumber: "0222 456 222",
-		Address:     "Linh Trung, Thủ Đức, TP.HCM",
+		EmployeeId:  120,
+		FullName:    "Lê Dung Anh",
+		Email:       "le.dug.anh@gmail.com",
+		PhoneNumber: "0222 789 222",
+		Address:     "Linh Xuân, Thủ Đức, TP.HCM",
 		Gender:      true,
 		JobTitle:    "designer",
 	}
 
-	callDeleteEmployee(client, newEmp)
+	callUpdateEmployee(client, newEmp)
 
 }
 
@@ -87,4 +88,14 @@ func callDeleteEmployee(c employeepb.EmployeeServiceClient, emp *employeepb.Empl
 	}
 
 	log.Printf("Return status: %v\n", res)
+}
+
+func callUpdateEmployee(c employeepb.EmployeeServiceClient, emp *employeepb.EmployeeRequest) {
+	res, err := c.UpdateEmployee(context.Background(), emp)
+
+	if err != nil {
+		log.Fatalf("Error when client call update employee api: %v\n", err)
+	}
+
+	log.Printf("Updated employee data: %v\n", res)
 }

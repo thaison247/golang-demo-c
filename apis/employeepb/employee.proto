@@ -44,4 +44,5 @@ service EmployeeService{
     rpc GetListEmployees(ListEmployeesRequest) returns (stream EmployeeResponse){}
     rpc CreateEmployee(EmployeeRequest) returns (CreateEmployeeResponse){}
     rpc DeleteEmployee(EmployeeRequest) returns (DeleteEmployeeResponse){}
+    rpc UpdateEmployee(EmployeeRequest) returns (EmployeeResponse){}
 }

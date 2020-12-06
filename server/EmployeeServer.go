@@ -7,6 +7,7 @@ import (
 	"main/apis/employeepb"
 	"main/model"
 	"main/utils"
+	"time"
 
 	database "g.ghn.vn/scte-common/godal"
 )
@@ -59,6 +60,7 @@ func (e *EmployeeServer) GetListEmployees(req *employeepb.ListEmployeesRequest,
 		if err := stream.Send(emp); err != nil {
 			return err
 		}
+		time.Sleep(500 * time.Millisecond)
 	}
 
 	return nil
@@ -109,4 +111,42 @@ func (e *EmployeeServer) DeleteEmployee(ctx context.Context, req *employeepb.Emp
 	}
 
 	return resp, nil
+}
+
+func (e *EmployeeServer) UpdateEmployee(ctx context.Context, req *employeepb.EmployeeRequest) (*employeepb.EmployeeResponse, error) {
+	reqData := make(map[string]interface{})
+	jsonString, _ := json.Marshal(req)
+	json.Unmarshal(jsonString, &reqData)
+
+	dbtype := utils.Global[utils.POSTGRES_ENTITY].(database.Postgres)
+	_, err := model.Update(dbtype, "employees", reqData, map[string]interface{}{"employee_id": reqData["employee_id"]})
+
+	if err != nil {
+		return nil, err
+	}
+
+	employeeId := int(reqData["employee_id"].(float64))
+
+	log.Println(employeeId)
+
+	res, err := model.Get(dbtype, "employees", 1, 0)
+
+	if err != nil {
+		return nil, err
+	}
+
+	log.Println(res[0])
+
+	// row := res[0]
+
+	// log.Println(row)
+
+	//convert map[string]interface{} to json
+	jsonString, _ = json.Marshal(res[0])
+
+	//convert json to struct
+	emp := &employeepb.EmployeeResponse{}
+	json.Unmarshal(jsonString, emp)
+
+	return emp, nil
 }
